@@ -4,3 +4,55 @@ server:
   ssl:
     enabled: false
 
+jwt:
+  access-token:
+    secret: 78c6bdc1-6fce-41e1-8a38-4a32f5aaf81a
+  refresh-token:
+    secret: 78c6bdc1-6fce-41e1-8a38-1234df123dfd
+
+spring:
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        highlight_sql: true
+        auto_quote_keyword: true
+        hbm2ddl:
+          auto: none
+
+  datasource:
+    url: jdbc:postgresql://localhost:9432/credential
+    username: root
+    password: 123456789
+    driver-class-name: org.postgresql.Driver
+    type: org.apache.commons.dbcp2.BasicDataSource
+    dbcp2:
+      initial-size: 5                         # 초기 연결 수
+      max-total: 30                            # 최대 커넥션 수
+      max-idle: 15                             # 최대 유휴 커넥션 수
+      min-idle: 5                              # 최소 유휴 커넥션 수
+      max-wait-millis: 10000                   # 커넥션 풀에서 커넥션을 가져오기 위해 기다리는 최대 시간 (ms)
+      validation-query: SELECT 1               # 커넥션 유효성 검사 쿼리
+      test-on-borrow: true                     # 대여 시 유효성 검사
+      test-while-idle: true                    # 유휴 상태일 때 검사
+      time-between-eviction-runs-millis: 5000  # 유휴 커넥션 검사 주기
+      min-evictable-idle-time-millis: 60000    # 유휴 커넥션 최소 유지 시간
+
+  kafka:
+    bootstrap-servers: localhost:8011
+    username: admin
+    password: admin!23
+
+oauth:
+  google:
+    client-id: 985212099499-uel8drlne8o4et7e3u1gbnjjvdi0k11l.apps.googleusercontent.com
+
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: trace
+    org.springframework.transaction.interceptor: trace
+  file:
+    name: logs/auth.log
