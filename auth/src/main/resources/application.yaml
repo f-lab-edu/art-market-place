@@ -1,3 +1,6 @@
-spring:
-  application:
-    name: auth
+server:
+  shutdown: graceful
+  port: 8002
+  ssl:
+    enabled: false
+
