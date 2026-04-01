@@ -712,3 +712,33 @@ Caused by: java.lang.IllegalStateException: The following classes could not be e
 2026-04-01T00:02:23.655+09:00  INFO 21912 --- [main] com.woobeee.auth.AuthApplicationTests    : Starting AuthApplicationTests using Java 25.0.2 with PID 21912 (started by administrator in /Users/administrator/Documents/projects/art-market-place/auth)
 2026-04-01T00:02:23.657+09:00  INFO 21912 --- [main] com.woobeee.auth.AuthApplicationTests    : No active profile set, falling back to 1 default profile: "default"
 2026-04-01T00:02:24.107+09:00  INFO 21912 --- [main] com.woobeee.auth.AuthApplicationTests    : Started AuthApplicationTests in 0.572 seconds (process running for 1.241)
+2026-04-01T22:48:36.927+09:00  INFO 88456 --- [main] .UserCredentialControllerIntegrationTest : Starting UserCredentialControllerIntegrationTest using Java 25.0.2 with PID 88456 (started by administrator in /Users/administrator/Documents/projects/art-market-place/auth)
+2026-04-01T22:48:36.928+09:00  INFO 88456 --- [main] .UserCredentialControllerIntegrationTest : No active profile set, falling back to 1 default profile: "default"
+2026-04-01T22:48:37.411+09:00  INFO 88456 --- [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-04-01T22:48:37.411+09:00  INFO 88456 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-04-01T22:48:37.412+09:00  INFO 88456 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-04-01T22:48:37.425+09:00  INFO 88456 --- [main] .UserCredentialControllerIntegrationTest : Started UserCredentialControllerIntegrationTest in 0.676 seconds (process running for 1.23)
+2026-04-01T22:48:58.807+09:00  INFO 88456 --- [main] c.w.a.c.UserCredentialControllerImpl     : login request
+2026-04-01T22:48:58.896+09:00  INFO 88456 --- [main] c.w.a.c.UserCredentialControllerImpl     : logout request
+2026-04-01T22:48:58.903+09:00  INFO 88456 --- [main] c.w.a.c.UserCredentialControllerImpl     : sign in request
+2026-04-01T22:48:58.907+09:00  INFO 88456 --- [main] c.w.a.c.UserCredentialControllerImpl     : refresh request
+2026-04-01T22:49:14.738+09:00  INFO 88727 --- [main] .UserCredentialControllerIntegrationTest : Starting UserCredentialControllerIntegrationTest using Java 25.0.2 with PID 88727 (started by administrator in /Users/administrator/Documents/projects/art-market-place/auth)
+2026-04-01T22:49:14.739+09:00  INFO 88727 --- [main] .UserCredentialControllerIntegrationTest : No active profile set, falling back to 1 default profile: "default"
+2026-04-01T22:49:15.202+09:00  INFO 88727 --- [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-04-01T22:49:15.202+09:00  INFO 88727 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-04-01T22:49:15.203+09:00  INFO 88727 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-04-01T22:49:15.216+09:00  INFO 88727 --- [main] .UserCredentialControllerIntegrationTest : Started UserCredentialControllerIntegrationTest in 0.649 seconds (process running for 1.555)
+2026-04-01T22:49:36.613+09:00  INFO 88727 --- [main] c.w.a.c.UserCredentialControllerImpl     : login request
+2026-04-01T22:49:36.658+09:00  INFO 88727 --- [main] c.w.a.c.UserCredentialControllerImpl     : logout request
+2026-04-01T22:49:36.664+09:00  INFO 88727 --- [main] c.w.a.c.UserCredentialControllerImpl     : sign in request
+2026-04-01T22:49:36.669+09:00  INFO 88727 --- [main] c.w.a.c.UserCredentialControllerImpl     : refresh request
+2026-04-01T22:56:12.325+09:00  INFO 91028 --- [main] .UserCredentialControllerIntegrationTest : Starting UserCredentialControllerIntegrationTest using Java 25.0.2 with PID 91028 (started by administrator in /Users/administrator/Documents/projects/art-market-place/auth)
+2026-04-01T22:56:12.326+09:00  INFO 91028 --- [main] .UserCredentialControllerIntegrationTest : No active profile set, falling back to 1 default profile: "default"
+2026-04-01T22:56:12.760+09:00  INFO 91028 --- [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-04-01T22:56:12.760+09:00  INFO 91028 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-04-01T22:56:12.761+09:00  INFO 91028 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-04-01T22:56:12.773+09:00  INFO 91028 --- [main] .UserCredentialControllerIntegrationTest : Started UserCredentialControllerIntegrationTest in 0.66 seconds (process running for 1.306)
+2026-04-01T22:56:13.027+09:00  INFO 91028 --- [main] c.w.a.c.UserCredentialControllerImpl     : login request
+2026-04-01T22:56:13.099+09:00  INFO 91028 --- [main] c.w.a.c.UserCredentialControllerImpl     : logout request
+2026-04-01T22:56:13.105+09:00  INFO 91028 --- [main] c.w.a.c.UserCredentialControllerImpl     : sign in request
+2026-04-01T22:56:13.109+09:00  INFO 91028 --- [main] c.w.a.c.UserCredentialControllerImpl     : refresh request

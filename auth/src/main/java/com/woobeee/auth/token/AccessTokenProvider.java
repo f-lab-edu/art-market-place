@@ -9,6 +9,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,9 @@ public class AccessTokenProvider {
     private static final String ACCESS_TOKEN_TYPE = "access";
     private static final String REFRESH_TOKEN_TYPE = "refresh";
 
+    @Getter
     private final long accessTokenExpirationMillis;
+    @Getter
     private final long refreshTokenExpirationMillis;
     private final SecretKey accessTokenKey;
     private final SecretKey refreshTokenKey;
@@ -104,14 +107,6 @@ public class AccessTokenProvider {
         if (!AccessTokenProvider.REFRESH_TOKEN_TYPE.equals(actualType)) {
             throw new JwtNotValidException(ErrorCode.login_jwtInvalid);
         }
-    }
-
-    public long getAccessTokenExpirationMillis() {
-        return accessTokenExpirationMillis;
-    }
-
-    public long getRefreshTokenExpirationMillis() {
-        return refreshTokenExpirationMillis;
     }
 
     public record RefreshTokenPayload(

@@ -1,11 +1,13 @@
 package com.woobeee.auth.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 @Table(
         uniqueConstraints = @UniqueConstraint(columnNames = {"clientId", "domainKey"})
 )
@@ -56,42 +58,6 @@ public class IdempotencyRecord {
         this.status = Status.FAILED;
         this.responseCode = responseCode;
         this.responseBody = responseBody;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public String getDomainKey() {
-        return domainKey;
-    }
-
-    public String getRequestHash() {
-        return requestHash;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public Integer getResponseCode() {
-        return responseCode;
-    }
-
-    public String getResponseBody() {
-        return responseBody;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getExpiresAt() {
-        return expiresAt;
     }
 
 }
