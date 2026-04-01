@@ -1,10 +1,13 @@
 package com.woobeee.auth.aop;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woobeee.auth.dto.IdempotencyResult;
 import com.woobeee.auth.dto.response.ApiResponse;
-import com.woobeee.auth.exception.*;
-import com.woobeee.auth.service.IdempotencyService;
+import com.woobeee.auth.exception.CustomConflictException;
+import com.woobeee.auth.exception.JwtExpiredException;
+import com.woobeee.auth.exception.JwtNotValidException;
+import com.woobeee.auth.exception.PasswordNotMatchException;
+import com.woobeee.auth.exception.UserConflictException;
+import com.woobeee.auth.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,14 +23,15 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.WebUtils;
+import tools.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Aspect
 @Component
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class IdempotencyAspect {
     private final IdempotencyService idempotencyService;
     private final ObjectMapper objectMapper;

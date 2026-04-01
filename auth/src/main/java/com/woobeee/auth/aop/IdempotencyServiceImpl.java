@@ -1,7 +1,5 @@
-package com.woobeee.auth.service;
+package com.woobeee.auth.aop;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woobeee.auth.dto.IdempotencyResult;
 import com.woobeee.auth.entity.IdempotencyRecord;
 import com.woobeee.auth.exception.CustomConflictException;
@@ -13,14 +11,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 
-
-@RequiredArgsConstructor
 @Slf4j
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class IdempotencyServiceImpl implements IdempotencyService{
     private final IdempotencyRecordRepository idempotencyRecordRepository;
     private final ObjectMapper objectMapper;
@@ -66,13 +64,9 @@ public class IdempotencyServiceImpl implements IdempotencyService{
         IdempotencyRecord r = idempotencyRecordRepository
                 .findByClientIdAndDomainKey(clientId, domainKey).orElseThrow();
 
-        try {
-            String b = objectMapper.writeValueAsString(body);
-            r.markCompleted(code, b);
-            idempotencyRecordRepository.saveAndFlush(r);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to serialize response body", e);
-        }
+        String b = objectMapper.writeValueAsString(body);
+        r.markCompleted(code, b);
+        idempotencyRecordRepository.saveAndFlush(r);
     }
 
     @Override
@@ -80,12 +74,8 @@ public class IdempotencyServiceImpl implements IdempotencyService{
         IdempotencyRecord r = idempotencyRecordRepository
                 .findByClientIdAndDomainKey(clientId, domainKey).orElseThrow();
 
-        try {
-            String b = objectMapper.writeValueAsString(body);
-            r.markFailed(code, b);
-            idempotencyRecordRepository.saveAndFlush(r);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to serialize response body", e);
-        }
+        String b = objectMapper.writeValueAsString(body);
+        r.markFailed(code, b);
+        idempotencyRecordRepository.saveAndFlush(r);
     }
 }

@@ -24,7 +24,7 @@ spring:
           auto: none
 
   datasource:
-    url: jdbc:postgresql://localhost:9432/credential
+    url: jdbc:postgresql://localhost:9433/credential
     username: root
     password: 123456789
     driver-class-name: org.postgresql.Driver

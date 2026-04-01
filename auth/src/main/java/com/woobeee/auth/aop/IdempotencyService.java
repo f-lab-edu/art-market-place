@@ -1,4 +1,4 @@
-package com.woobeee.auth.service;
+package com.woobeee.auth.aop;
 
 
 import com.woobeee.auth.dto.IdempotencyResult;

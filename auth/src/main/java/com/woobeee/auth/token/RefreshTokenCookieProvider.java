@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 @Component
-public class RefreshTokenProvider {
+public class RefreshTokenCookieProvider {
     private final AccessTokenProvider accessTokenProvider;
     private final String cookieName;
     private final String cookiePath;
     private final boolean secureCookie;
     private final String sameSite;
 
-    public RefreshTokenProvider(
+    public RefreshTokenCookieProvider(
             AccessTokenProvider accessTokenProvider,
             @Value("${jwt.refresh-token.cookie-name:refreshToken}") String cookieName,
             @Value("${jwt.refresh-token.cookie-path:/api/auth}") String cookiePath,
