@@ -742,3 +742,23 @@ Caused by: java.lang.IllegalStateException: The following classes could not be e
 2026-04-01T22:56:13.099+09:00  INFO 91028 --- [main] c.w.a.c.UserCredentialControllerImpl     : logout request
 2026-04-01T22:56:13.105+09:00  INFO 91028 --- [main] c.w.a.c.UserCredentialControllerImpl     : sign in request
 2026-04-01T22:56:13.109+09:00  INFO 91028 --- [main] c.w.a.c.UserCredentialControllerImpl     : refresh request
+2026-04-01T23:01:49.834+09:00  INFO 93026 --- [main] .UserCredentialControllerIntegrationTest : Starting UserCredentialControllerIntegrationTest using Java 25.0.2 with PID 93026 (started by administrator in /Users/administrator/Documents/projects/art-market-place/auth)
+2026-04-01T23:01:49.835+09:00  INFO 93026 --- [main] .UserCredentialControllerIntegrationTest : No active profile set, falling back to 1 default profile: "default"
+2026-04-01T23:01:50.261+09:00  INFO 93026 --- [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-04-01T23:01:50.262+09:00  INFO 93026 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-04-01T23:01:50.263+09:00  INFO 93026 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-04-01T23:01:50.275+09:00  INFO 93026 --- [main] .UserCredentialControllerIntegrationTest : Started UserCredentialControllerIntegrationTest in 0.606 seconds (process running for 1.549)
+2026-04-01T23:02:11.610+09:00  INFO 93026 --- [main] c.w.a.c.UserCredentialControllerImpl     : login request
+2026-04-01T23:02:11.655+09:00  INFO 93026 --- [main] c.w.a.c.UserCredentialControllerImpl     : logout request
+2026-04-01T23:02:11.661+09:00  INFO 93026 --- [main] c.w.a.c.UserCredentialControllerImpl     : sign in request
+2026-04-01T23:02:11.667+09:00  INFO 93026 --- [main] c.w.a.c.UserCredentialControllerImpl     : refresh request
+2026-04-01T23:24:51.337+09:00  INFO 1106 --- [main] .UserCredentialControllerIntegrationTest : Starting UserCredentialControllerIntegrationTest using Java 25.0.2 with PID 1106 (started by administrator in /Users/administrator/Documents/projects/art-market-place/auth)
+2026-04-01T23:24:51.338+09:00  INFO 1106 --- [main] .UserCredentialControllerIntegrationTest : No active profile set, falling back to 1 default profile: "default"
+2026-04-01T23:24:51.761+09:00  INFO 1106 --- [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-04-01T23:24:51.762+09:00  INFO 1106 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-04-01T23:24:51.763+09:00  INFO 1106 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-04-01T23:24:51.774+09:00  INFO 1106 --- [main] .UserCredentialControllerIntegrationTest : Started UserCredentialControllerIntegrationTest in 0.59 seconds (process running for 1.494)
+2026-04-01T23:25:13.116+09:00  INFO 1106 --- [main] c.w.a.c.UserCredentialControllerImpl     : login request
+2026-04-01T23:25:13.160+09:00  INFO 1106 --- [main] c.w.a.c.UserCredentialControllerImpl     : logout request
+2026-04-01T23:25:13.166+09:00  INFO 1106 --- [main] c.w.a.c.UserCredentialControllerImpl     : sign in request
+2026-04-01T23:25:13.171+09:00  INFO 1106 --- [main] c.w.a.c.UserCredentialControllerImpl     : refresh request
