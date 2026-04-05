@@ -21,5 +21,8 @@ logs/
 .env
 .env.*
 
+# Local AI/MCP config
+.ai/mcp/mcp.json
+
 # Docker local data
 .docker-compose/.docker-volumes/
