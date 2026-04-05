@@ -1,0 +1,60 @@
+server:
+  shutdown: graceful
+  port: 8000
+  ssl:
+    enabled: false
+
+jwt:
+  access-token:
+    secret: 78c6bdc1-6fce-41e1-8a38-4a32f5aaf81a
+  refresh-token:
+    secret: 78c6bdc1-6fce-41e1-8a38-1234df123dfd
+
+oauth:
+  google:
+    client-id: 985212099499-uel8drlne8o4et7e3u1gbnjjvdi0k11l.apps.googleusercontent.com
+
+spring:
+  application:
+    name: art-market-place
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        highlight_sql: true
+        auto_quote_keyword: true
+        hbm2ddl:
+          auto: none
+
+  datasource:
+    url: jdbc:postgresql://localhost:9433/credential
+    username: root
+    password: 123456789
+    driver-class-name: org.postgresql.Driver
+    type: org.apache.commons.dbcp2.BasicDataSource
+    dbcp2:
+      initial-size: 5
+      max-total: 30
+      max-idle: 15
+      min-idle: 5
+      max-wait-millis: 10000
+      validation-query: SELECT 1
+      test-on-borrow: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 5000
+      min-evictable-idle-time-millis: 60000
+
+  kafka:
+    bootstrap-servers: localhost:8011
+    username: admin
+    password: admin!23
+
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: trace
+    org.springframework.transaction.interceptor: trace
+  file:
+    name: logs/art-market-place.log

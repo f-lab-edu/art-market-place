@@ -1,0 +1,11 @@
+/target/
+/.mvn/
+*.iml
+
+# Legacy module build outputs left in the repo root during the migration.
+/auth/target/
+/gateway/target/
+/market/target/
+
+# Runtime files
+/logs/
