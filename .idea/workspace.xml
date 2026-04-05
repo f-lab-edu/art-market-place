@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="74f3741e-e641-40ae-afa3-d3129e2d1f5c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/api/ApiResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/controller/TokenGenerateController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.docker-compose/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.docker-compose/docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +23,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="package-info" />
         <option value="Class" />
       </list>
     </option>
@@ -64,66 +70,68 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JUnit.AccessTokenProviderTest.generateAccessToken_containsExpectedClaims.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.AuthTokenServiceImplTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.IdempotencyAspectTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.IdempotencyServiceImplTest.begin_whenFirstRequest_returnsFreshProceedResult.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.IdempotencyServiceImplTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OauthUserCredentialServiceImplTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OutboxProducerSchedulerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OutboxSendingRecoverySchedulerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.RefreshTokenProviderTest.addRefreshTokenCookie_setsConfiguredCookieAttributes.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.RefreshTokenProviderTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserCredentialControllerIntegrationTest.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.art-market-place [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.art-market-place [compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.auth [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.auth [compile].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;SHELLCHECK.PATH&quot;: &quot;/Users/administrator/Library/Application Support/JetBrains/IntelliJIdea2024.1/plugins/Shell Script/shellcheck&quot;,
-    &quot;Spring Boot.ArtMarketPlaceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.AuthApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/administrator/Documents/projects/art-market-place/auth/src/main/java/com/woobeee/auth/repository&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.AccessTokenProviderTest.generateAccessToken_containsExpectedClaims.executor": "Run",
+    "JUnit.AuthTokenServiceImplTest.executor": "Run",
+    "JUnit.IdempotencyAspectTest.executor": "Run",
+    "JUnit.IdempotencyServiceImplTest.begin_whenFirstRequest_returnsFreshProceedResult.executor": "Run",
+    "JUnit.IdempotencyServiceImplTest.executor": "Run",
+    "JUnit.OauthUserCredentialServiceImplTest.executor": "Run",
+    "JUnit.OutboxProducerSchedulerTest.executor": "Run",
+    "JUnit.OutboxSendingRecoverySchedulerTest.executor": "Run",
+    "JUnit.RefreshTokenProviderTest.addRefreshTokenCookie_setsConfiguredCookieAttributes.executor": "Run",
+    "JUnit.RefreshTokenProviderTest.executor": "Run",
+    "JUnit.TokenServiceTest.executor": "Run",
+    "JUnit.UserCredentialControllerIntegrationTest.executor": "Run",
+    "Maven.art-market-place [clean].executor": "Run",
+    "Maven.art-market-place [compile].executor": "Run",
+    "Maven.auth [clean].executor": "Run",
+    "Maven.auth [compile].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SHELLCHECK.PATH": "/Users/administrator/Library/Application Support/JetBrains/IntelliJIdea2024.1/plugins/Shell Script/shellcheck",
+    "Spring Boot.ArtMarketPlaceApplication.executor": "Run",
+    "Spring Boot.AuthApplication.executor": "Run",
+    "git-widget-placeholder": "feature/5",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/administrator/Documents/projects/art-market-place/src/main/java/com/woobeee/artmarketplace/auth/exception",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.configurations.included.in.services": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/exception" />
       <recent name="$PROJECT_DIR$/auth/src/main/java/com/woobeee/auth/repository" />
       <recent name="$PROJECT_DIR$/auth/src/main/java/com/woobeee/auth" />
       <recent name="$PROJECT_DIR$/auth/src/main/java/com/woobeee/auth/controller" />
       <recent name="$PROJECT_DIR$/auth/src/main/java/com/woobeee/auth/entity" />
-      <recent name="$PROJECT_DIR$/auth/src/main/java/com/woobeee/auth/dto" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/.docker-compose" />
       <recent name="$PROJECT_DIR$/.docker-compose/config" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.woobeee.artmarketplace.auth.exception" />
+      <recent name="com.woobeee.artmarketplace.auth.api" />
       <recent name="com.woobeee.auth.repository" />
       <recent name="com.woobeee.auth.entity" />
       <recent name="com.woobeee.auth.dto" />
-      <recent name="com.woobeee.auth.dto.response" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -148,22 +156,7 @@
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.AuthTokenServiceImplTest">
-    <configuration name="AuthTokenServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="auth" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.woobeee.auth.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.woobeee.auth.service" />
-      <option name="MAIN_CLASS_NAME" value="com.woobeee.auth.service.AuthTokenServiceImplTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Spring Boot.ArtMarketPlaceApplication">
     <configuration name="OauthUserCredentialServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="auth" />
       <extension name="coverage">
@@ -204,6 +197,21 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.woobeee.auth.producer" />
       <option name="MAIN_CLASS_NAME" value="com.woobeee.auth.producer.OutboxSendingRecoverySchedulerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TokenServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="art-market-place" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.woobeee.artmarketplace.auth.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.woobeee.artmarketplace.auth.service" />
+      <option name="MAIN_CLASS_NAME" value="com.woobeee.artmarketplace.auth.service.TokenServiceTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -265,11 +273,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.TokenServiceTest" />
         <item itemvalue="JUnit.UserCredentialControllerIntegrationTest" />
         <item itemvalue="JUnit.OutboxSendingRecoverySchedulerTest" />
         <item itemvalue="JUnit.OutboxProducerSchedulerTest" />
         <item itemvalue="JUnit.OauthUserCredentialServiceImplTest" />
-        <item itemvalue="JUnit.AuthTokenServiceImplTest" />
       </list>
     </recent_temporary>
   </component>
