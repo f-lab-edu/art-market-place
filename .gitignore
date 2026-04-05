@@ -1,11 +1,25 @@
-/target/
-/.mvn/
-*.iml
+# OS
+.DS_Store
 
-# Legacy module build outputs left in the repo root during the migration.
-/auth/target/
-/gateway/target/
-/market/target/
+# IDE
+.idea/
+*.iml
+out/
+
+# Build outputs
+target/
+**/target/
+
+# Maven wrapper temp files
+.mvn/wrapper/maven-wrapper.jar
 
 # Runtime files
-/logs/
+logs/
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Docker local data
+.docker-compose/.docker-volumes/
