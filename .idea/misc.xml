@@ -10,9 +10,6 @@
         <option value="$PROJECT_DIR$/market/pom.xml" />
       </list>
     </option>
-    <option name="ignoredFiles">
-      <set />
-    </option>
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="temurin-25" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
