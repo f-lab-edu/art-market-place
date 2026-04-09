@@ -4,12 +4,6 @@ server:
   ssl:
     enabled: false
 
-jwt:
-  access-token:
-    secret: 78c6bdc1-6fce-41e1-8a38-4a32f5aaf81a
-  refresh-token:
-    secret: 78c6bdc1-6fce-41e1-8a38-1234df123dfd
-
 oauth:
   google:
     client-id: 985212099499-uel8drlne8o4et7e3u1gbnjjvdi0k11l.apps.googleusercontent.com
@@ -17,6 +11,11 @@ oauth:
 spring:
   application:
     name: art-market-place
+  data:
+    redis:
+      host: localhost
+      port: 9379
+      password: root!23
   jpa:
     open-in-view: false
     show-sql: true
@@ -46,11 +45,6 @@ spring:
       test-while-idle: true
       time-between-eviction-runs-millis: 5000
       min-evictable-idle-time-millis: 60000
-
-  kafka:
-    bootstrap-servers: localhost:8011
-    username: admin
-    password: admin!23
 
 logging:
   level:
