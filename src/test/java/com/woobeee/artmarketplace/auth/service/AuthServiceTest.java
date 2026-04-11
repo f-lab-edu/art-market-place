@@ -1,15 +1,20 @@
 package com.woobeee.artmarketplace.auth.service;
 
 import com.woobeee.artmarketplace.auth.api.request.BuyerSignupRequest;
+import com.woobeee.artmarketplace.auth.api.request.GoogleAuthorizationCallbackRequest;
 import com.woobeee.artmarketplace.auth.api.request.LoginRequest;
-import com.woobeee.artmarketplace.auth.api.request.SellerSignupRequest;
+import com.woobeee.artmarketplace.auth.api.response.GoogleAuthorizationResponse;
 import com.woobeee.artmarketplace.auth.api.response.TokenResponse;
+import com.woobeee.artmarketplace.auth.config.GoogleOauthProperties;
 import com.woobeee.artmarketplace.auth.entity.Buyer;
 import com.woobeee.artmarketplace.auth.entity.MemberType;
-import com.woobeee.artmarketplace.auth.entity.Seller;
 import com.woobeee.artmarketplace.auth.repository.BuyerRepository;
 import com.woobeee.artmarketplace.auth.repository.SellerRepository;
+import com.woobeee.artmarketplace.auth.service.dto.GoogleAuthorizationAction;
+import com.woobeee.artmarketplace.auth.service.dto.GoogleAuthorizationContext;
 import com.woobeee.artmarketplace.auth.service.dto.GoogleIdentity;
+import com.woobeee.artmarketplace.auth.service.dto.GoogleTokenExchangeResponse;
+import com.woobeee.artmarketplace.auth.token.TokenGenerator;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,14 +44,99 @@ class AuthServiceTest {
     private GoogleIdentityVerifier googleIdentityVerifier;
 
     @Mock
+    private GoogleOauthClient googleOauthClient;
+
+    @Mock
+    private GoogleAuthorizationStateStore googleAuthorizationStateStore;
+
+    @Mock
+    private GoogleOauthProperties googleOauthProperties;
+
+    @Mock
+    private TokenGenerator tokenGenerator;
+
+    @Mock
     private TokenService tokenService;
 
     @InjectMocks
     private AuthService authService;
 
+    private void mockAuthorizationProperties() {
+        when(googleOauthProperties.getClientId()).thenReturn("google-client-id");
+        when(googleOauthProperties.getRedirectUri()).thenReturn("http://localhost:3000/auth/google/callback");
+        when(googleOauthProperties.getAuthorizationUri()).thenReturn("https://accounts.google.com/o/oauth2/v2/auth");
+        when(googleOauthProperties.getScope()).thenReturn("openid email profile");
+        when(googleOauthProperties.getAuthorizationStateTtlSeconds()).thenReturn(600L);
+    }
+
     @Test
-    void signupBuyerCreatesBuyerAndIssuesTokens() {
-        BuyerSignupRequest request = new BuyerSignupRequest("id-token", "buyer-nick", true, true, "ios");
+    void signupBuyerCreatesAuthorizationResponseAndStoresContext() {
+        mockAuthorizationProperties();
+        BuyerSignupRequest request = new BuyerSignupRequest("buyer-nick", true, true, "ios");
+        when(tokenGenerator.nextToken()).thenReturn("state-123");
+
+        GoogleAuthorizationResponse response = authService.signupBuyer(request);
+
+        ArgumentCaptor<GoogleAuthorizationContext> contextCaptor =
+                ArgumentCaptor.forClass(GoogleAuthorizationContext.class);
+        verify(googleAuthorizationStateStore).save(eq("state-123"), contextCaptor.capture());
+
+        GoogleAuthorizationContext context = contextCaptor.getValue();
+        assertThat(context.action()).isEqualTo(GoogleAuthorizationAction.BUYER_SIGNUP);
+        assertThat(context.device()).isEqualTo("ios");
+        assertThat(context.nickname()).isEqualTo("buyer-nick");
+        assertThat(context.codeVerifier()).isNotBlank();
+
+        assertThat(response.state()).isEqualTo("state-123");
+        assertThat(response.expiresInSeconds()).isEqualTo(600L);
+        assertThat(response.authorizationUrl()).contains("response_type=code");
+        assertThat(response.authorizationUrl()).contains("client_id=google-client-id");
+        assertThat(response.authorizationUrl()).contains("state=state-123");
+        assertThat(response.authorizationUrl()).contains("code_challenge_method=S256");
+    }
+
+    @Test
+    void loginCreatesAuthorizationResponseAndStoresContext() {
+        mockAuthorizationProperties();
+        LoginRequest request = new LoginRequest(MemberType.BUYER, "android");
+        when(tokenGenerator.nextToken()).thenReturn("login-state");
+
+        GoogleAuthorizationResponse response = authService.login(request);
+
+        ArgumentCaptor<GoogleAuthorizationContext> contextCaptor =
+                ArgumentCaptor.forClass(GoogleAuthorizationContext.class);
+        verify(googleAuthorizationStateStore).save(eq("login-state"), contextCaptor.capture());
+
+        GoogleAuthorizationContext context = contextCaptor.getValue();
+        assertThat(context.action()).isEqualTo(GoogleAuthorizationAction.LOGIN);
+        assertThat(context.memberType()).isEqualTo(MemberType.BUYER);
+        assertThat(context.device()).isEqualTo("android");
+        assertThat(response.state()).isEqualTo("login-state");
+    }
+
+    @Test
+    void completeGoogleAuthorizationSignsUpBuyerAndIssuesTokens() {
+        GoogleAuthorizationCallbackRequest request = new GoogleAuthorizationCallbackRequest("auth-code", "state-123");
+        GoogleAuthorizationContext context = new GoogleAuthorizationContext(
+                GoogleAuthorizationAction.BUYER_SIGNUP,
+                "code-verifier",
+                "ios",
+                null,
+                "buyer-nick",
+                true,
+                true,
+                null
+        );
+        when(googleAuthorizationStateStore.find("state-123")).thenReturn(Optional.of(context));
+        when(googleOauthClient.exchangeAuthorizationCode("auth-code", "code-verifier"))
+                .thenReturn(new GoogleTokenExchangeResponse(
+                        "google-access",
+                        3600L,
+                        null,
+                        "openid email profile",
+                        "Bearer",
+                        "id-token"
+                ));
         when(googleIdentityVerifier.verify("id-token"))
                 .thenReturn(new GoogleIdentity("google-sub", "buyer@example.com", "Buyer Name"));
         when(buyerRepository.existsByGoogleSubject("google-sub")).thenReturn(false);
@@ -57,87 +148,52 @@ class AuthServiceTest {
         when(tokenService.issue(11L, "ROLE_BUYER", "ios", "127.0.0.1"))
                 .thenReturn(new TokenResponse("access", 900, "refresh", 2_592_000));
 
-        TokenResponse response = authService.signupBuyer(request, "127.0.0.1");
+        TokenResponse response = authService.completeGoogleAuthorization(request, "127.0.0.1");
 
         ArgumentCaptor<Buyer> buyerCaptor = ArgumentCaptor.forClass(Buyer.class);
+        verify(googleAuthorizationStateStore).delete("state-123");
         verify(buyerRepository).save(buyerCaptor.capture());
-        Buyer savedBuyer = buyerCaptor.getValue();
 
+        Buyer savedBuyer = buyerCaptor.getValue();
         assertThat(savedBuyer.getGoogleSubject()).isEqualTo("google-sub");
         assertThat(savedBuyer.getEmail()).isEqualTo("buyer@example.com");
         assertThat(savedBuyer.getNickname()).isEqualTo("buyer-nick");
-        assertThat(savedBuyer.isTermsAgreed()).isTrue();
-        assertThat(savedBuyer.isPrivacyPolicyAgreed()).isTrue();
         assertThat(response.accessToken()).isEqualTo("access");
         assertThat(response.refreshToken()).isEqualTo("refresh");
     }
 
     @Test
-    void signupSellerCreatesSellerAndIssuesTokens() {
-        SellerSignupRequest request = new SellerSignupRequest(
-                "id-token",
-                "seller-nick",
-                true,
-                true,
-                "https://cdn.example.com/cert.png",
-                "web"
+    void completeGoogleAuthorizationFailsWhenSellerIsNotRegistered() {
+        GoogleAuthorizationCallbackRequest request = new GoogleAuthorizationCallbackRequest("auth-code", "state-123");
+        GoogleAuthorizationContext context = new GoogleAuthorizationContext(
+                GoogleAuthorizationAction.LOGIN,
+                "code-verifier",
+                "web",
+                MemberType.SELLER,
+                null,
+                false,
+                false,
+                null
         );
+        when(googleAuthorizationStateStore.find("state-123")).thenReturn(Optional.of(context));
+        when(googleOauthClient.exchangeAuthorizationCode("auth-code", "code-verifier"))
+                .thenReturn(new GoogleTokenExchangeResponse(
+                        "google-access",
+                        3600L,
+                        null,
+                        "openid email profile",
+                        "Bearer",
+                        "id-token"
+                ));
         when(googleIdentityVerifier.verify("id-token"))
                 .thenReturn(new GoogleIdentity("seller-sub", "seller@example.com", "Seller Name"));
-        when(sellerRepository.existsByGoogleSubject("seller-sub")).thenReturn(false);
-        when(sellerRepository.save(any(Seller.class))).thenAnswer(invocation -> {
-            Seller seller = invocation.getArgument(0);
-            ReflectionTestUtils.setField(seller, "id", 29L);
-            return seller;
-        });
-        when(tokenService.issue(29L, "ROLE_SELLER", "web", "127.0.0.1"))
-                .thenReturn(new TokenResponse("seller-access", 900, "seller-refresh", 2_592_000));
+        when(sellerRepository.findByGoogleSubject("seller-sub")).thenReturn(Optional.empty());
 
-        TokenResponse response = authService.signupSeller(request, "127.0.0.1");
-
-        ArgumentCaptor<Seller> sellerCaptor = ArgumentCaptor.forClass(Seller.class);
-        verify(sellerRepository).save(sellerCaptor.capture());
-        Seller savedSeller = sellerCaptor.getValue();
-
-        assertThat(savedSeller.getGoogleSubject()).isEqualTo("seller-sub");
-        assertThat(savedSeller.getBusinessRegistrationCertificateUrl())
-                .isEqualTo("https://cdn.example.com/cert.png");
-        assertThat(response.accessToken()).isEqualTo("seller-access");
-        assertThat(response.refreshToken()).isEqualTo("seller-refresh");
-    }
-
-    @Test
-    void loginBuyerIssuesTokensForExistingMember() {
-        Buyer buyer = Buyer.create("buyer-sub", "buyer@example.com", "buyer-nick", true, true);
-        ReflectionTestUtils.setField(buyer, "id", 77L);
-
-        when(googleIdentityVerifier.verify("id-token"))
-                .thenReturn(new GoogleIdentity("buyer-sub", "buyer@example.com", "Buyer Name"));
-        when(buyerRepository.findByGoogleSubject("buyer-sub")).thenReturn(Optional.of(buyer));
-        when(tokenService.issue(77L, "ROLE_BUYER", "android", "10.0.0.5"))
-                .thenReturn(new TokenResponse("access-77", 900, "refresh-77", 2_592_000));
-
-        TokenResponse response = authService.login(
-                new LoginRequest("id-token", MemberType.BUYER, "android"),
-                "10.0.0.5"
-        );
-
-        assertThat(response.accessToken()).isEqualTo("access-77");
-        assertThat(response.refreshToken()).isEqualTo("refresh-77");
-    }
-
-    @Test
-    void loginFailsWhenSellerIsNotRegistered() {
-        when(googleIdentityVerifier.verify("id-token"))
-                .thenReturn(new GoogleIdentity("missing-seller", "seller@example.com", "Seller Name"));
-        when(sellerRepository.findByGoogleSubject("missing-seller")).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> authService.login(
-                new LoginRequest("id-token", MemberType.SELLER, "web"),
-                "127.0.0.1"
-        ))
+        assertThatThrownBy(() -> authService.completeGoogleAuthorization(request, "127.0.0.1"))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("404 NOT_FOUND")
                 .hasMessageContaining("Seller is not registered");
+
+        verify(googleAuthorizationStateStore).delete("state-123");
     }
 }

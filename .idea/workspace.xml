@@ -13,7 +13,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="2654" />
+    <option name="cachedIndexableFilesCount" value="43" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -26,7 +26,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature/5" />
+        <entry key="$PROJECT_DIR$" value="feature/backup" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -63,13 +63,11 @@
 }</component>
   <component name="ProjectId" id="3BfaEbOaWLlxO45QaKfJGZYHHJH" />
   <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "JUnit.AccessTokenProviderTest.generateAccessToken_containsExpectedClaims.executor": "Run",
-    "JUnit.AuthControllerTest.executor": "Run",
     "JUnit.AuthTokenServiceImplTest.executor": "Run",
     "JUnit.IdempotencyAspectTest.executor": "Run",
     "JUnit.IdempotencyServiceImplTest.begin_whenFirstRequest_returnsFreshProceedResult.executor": "Run",
@@ -99,7 +97,7 @@
     "SHELLCHECK.PATH": "/Users/administrator/Library/Application Support/JetBrains/IntelliJIdea2024.1/plugins/Shell Script/shellcheck",
     "Spring Boot.ArtMarketPlaceApplication.executor": "Run",
     "Spring Boot.AuthApplication.executor": "Run",
-    "git-widget-placeholder": "feature/7",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/administrator/Documents/projects/art-market-place/src/main/java/com/woobeee/artmarketplace/auth/exception",
     "node.js.detected.package.eslint": "true",
@@ -153,17 +151,17 @@
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.AuthControllerTest">
-    <configuration name="AuthControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="art-market-place" />
+  <component name="RunManager" selected="Spring Boot.ArtMarketPlaceApplication">
+    <configuration name="OauthUserCredentialServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="auth" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.woobeee.artmarketplace.auth.controller.*" />
+          <option name="PATTERN" value="com.woobeee.auth.service.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.woobeee.artmarketplace.auth.controller" />
-      <option name="MAIN_CLASS_NAME" value="com.woobeee.artmarketplace.auth.controller.AuthControllerTest" />
+      <option name="PACKAGE_NAME" value="com.woobeee.auth.service" />
+      <option name="MAIN_CLASS_NAME" value="com.woobeee.auth.service.OauthUserCredentialServiceImplTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -199,16 +197,16 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TokenGenerateControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="TokenServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="art-market-place" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.woobeee.artmarketplace.auth.controller.*" />
+          <option name="PATTERN" value="com.woobeee.artmarketplace.auth.service.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.woobeee.artmarketplace.auth.controller" />
-      <option name="MAIN_CLASS_NAME" value="com.woobeee.artmarketplace.auth.controller.TokenGenerateControllerTest" />
+      <option name="PACKAGE_NAME" value="com.woobeee.artmarketplace.auth.service" />
+      <option name="MAIN_CLASS_NAME" value="com.woobeee.artmarketplace.auth.service.TokenServiceTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -270,11 +268,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.AuthControllerTest" />
-        <item itemvalue="JUnit.TokenGenerateControllerTest" />
+        <item itemvalue="JUnit.TokenServiceTest" />
         <item itemvalue="JUnit.UserCredentialControllerIntegrationTest" />
         <item itemvalue="JUnit.OutboxSendingRecoverySchedulerTest" />
         <item itemvalue="JUnit.OutboxProducerSchedulerTest" />
+        <item itemvalue="JUnit.OauthUserCredentialServiceImplTest" />
       </list>
     </recent_temporary>
   </component>
@@ -295,7 +293,6 @@
       <updated>1774882469051</updated>
       <workItem from="1774882470123" duration="4013000" />
       <workItem from="1774967385769" duration="14202000" />
-      <workItem from="1775746628453" duration="13170000" />
     </task>
     <servers />
   </component>

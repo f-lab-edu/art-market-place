@@ -1,99 +1,100 @@
 package com.woobeee.artmarketplace.auth.service;
 
 import com.woobeee.artmarketplace.auth.api.request.BuyerSignupRequest;
+import com.woobeee.artmarketplace.auth.api.request.GoogleAuthorizationCallbackRequest;
 import com.woobeee.artmarketplace.auth.api.request.LoginRequest;
 import com.woobeee.artmarketplace.auth.api.request.SellerSignupRequest;
+import com.woobeee.artmarketplace.auth.api.response.GoogleAuthorizationResponse;
 import com.woobeee.artmarketplace.auth.api.response.TokenResponse;
+import com.woobeee.artmarketplace.auth.config.GoogleOauthProperties;
 import com.woobeee.artmarketplace.auth.entity.Buyer;
 import com.woobeee.artmarketplace.auth.entity.Seller;
 import com.woobeee.artmarketplace.auth.repository.BuyerRepository;
 import com.woobeee.artmarketplace.auth.repository.SellerRepository;
+import com.woobeee.artmarketplace.auth.service.dto.GoogleAuthorizationAction;
+import com.woobeee.artmarketplace.auth.service.dto.GoogleAuthorizationContext;
 import com.woobeee.artmarketplace.auth.service.dto.GoogleIdentity;
+import com.woobeee.artmarketplace.auth.token.TokenGenerator;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+    private static final Base64.Encoder URL_ENCODER = Base64.getUrlEncoder().withoutPadding();
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
     private final BuyerRepository buyerRepository;
     private final SellerRepository sellerRepository;
     private final GoogleIdentityVerifier googleIdentityVerifier;
+    private final GoogleOauthClient googleOauthClient;
+    private final GoogleAuthorizationStateStore googleAuthorizationStateStore;
+    private final GoogleOauthProperties googleOauthProperties;
+    private final TokenGenerator tokenGenerator;
     private final TokenService tokenService;
 
-    @Transactional
-    public TokenResponse signupBuyer(BuyerSignupRequest request, String ip) {
-        GoogleIdentity identity = googleIdentityVerifier.verify(request.idToken());
-        if (buyerRepository.existsByGoogleSubject(identity.subject())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Buyer already exists");
-        }
-
-        Buyer buyer = buyerRepository.save(Buyer.create(
-                identity.subject(),
-                identity.email(),
+    public GoogleAuthorizationResponse signupBuyer(BuyerSignupRequest request) {
+        return createAuthorizationResponse(new GoogleAuthorizationContext(
+                GoogleAuthorizationAction.BUYER_SIGNUP,
+                nextCodeVerifier(),
+                request.device(),
+                null,
                 request.nickname().trim(),
                 request.termsAgreed(),
-                request.privacyPolicyAgreed()
+                request.privacyPolicyAgreed(),
+                null
         ));
-
-        return createSession(
-                buyer.getId(),
-                "ROLE_BUYER",
-                request.device(),
-                ip
-        );
     }
 
-    @Transactional
-    public TokenResponse signupSeller(SellerSignupRequest request, String ip) {
-        GoogleIdentity identity = googleIdentityVerifier.verify(request.idToken());
-        if (sellerRepository.existsByGoogleSubject(identity.subject())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Seller already exists");
-        }
-
-        Seller seller = sellerRepository.save(Seller.create(
-                identity.subject(),
-                identity.email(),
+    public GoogleAuthorizationResponse signupSeller(SellerSignupRequest request) {
+        return createAuthorizationResponse(new GoogleAuthorizationContext(
+                GoogleAuthorizationAction.SELLER_SIGNUP,
+                nextCodeVerifier(),
+                request.device(),
+                null,
                 request.nickname().trim(),
                 request.termsAgreed(),
                 request.privacyPolicyAgreed(),
                 normalizeOptionalText(request.businessRegistrationCertificateUrl())
         ));
-
-        return createSession(
-                seller.getId(),
-                "ROLE_SELLER",
-                request.device(),
-                ip
-        );
     }
 
-    @Transactional(readOnly = true)
-    public TokenResponse login(LoginRequest request, String ip) {
-        GoogleIdentity identity = googleIdentityVerifier.verify(request.idToken());
+    public GoogleAuthorizationResponse login(LoginRequest request) {
+        return createAuthorizationResponse(new GoogleAuthorizationContext(
+                GoogleAuthorizationAction.LOGIN,
+                nextCodeVerifier(),
+                request.device(),
+                request.memberType(),
+                null,
+                false,
+                false,
+                null
+        ));
+    }
 
-        return switch (request.memberType()) {
-            case BUYER -> buyerRepository.findByGoogleSubject(identity.subject())
-                    .filter(Buyer::isActive)
-                    .map(buyer -> createSession(
-                            buyer.getId(),
-                            request.memberType().roleName(),
-                            request.device(),
-                            ip
-                    ))
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Buyer is not registered"));
-            case SELLER -> sellerRepository.findByGoogleSubject(identity.subject())
-                    .filter(Seller::isActive)
-                    .map(seller -> createSession(
-                            seller.getId(),
-                            request.memberType().roleName(),
-                            request.device(),
-                            ip
-                    ))
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Seller is not registered"));
+    @Transactional
+    public TokenResponse completeGoogleAuthorization(GoogleAuthorizationCallbackRequest request, String ip) {
+        GoogleAuthorizationContext context = googleAuthorizationStateStore.find(request.state())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid authorization state"));
+        googleAuthorizationStateStore.delete(request.state());
+
+        String idToken = googleOauthClient.exchangeAuthorizationCode(request.code(), context.codeVerifier()).idToken();
+        GoogleIdentity identity = googleIdentityVerifier.verify(idToken);
+
+        return switch (context.action()) {
+            case BUYER_SIGNUP -> signupBuyer(identity, context, ip);
+            case SELLER_SIGNUP -> signupSeller(identity, context, ip);
+            case LOGIN -> login(identity, context, ip);
         };
     }
 
@@ -104,6 +105,96 @@ public class AuthService {
             String ip
     ) {
         return tokenService.issue(memberId, role, device, ip);
+    }
+
+    private GoogleAuthorizationResponse createAuthorizationResponse(GoogleAuthorizationContext context) {
+        String state = tokenGenerator.nextToken();
+        googleAuthorizationStateStore.save(state, context);
+
+        String authorizationUrl = UriComponentsBuilder
+                .fromUriString(googleOauthProperties.getAuthorizationUri())
+                .queryParam("response_type", "code")
+                .queryParam("client_id", googleOauthProperties.getClientId())
+                .queryParam("redirect_uri", googleOauthProperties.getRedirectUri())
+                .queryParam("scope", googleOauthProperties.getScope())
+                .queryParam("state", state)
+                .queryParam("code_challenge", toCodeChallenge(context.codeVerifier()))
+                .queryParam("code_challenge_method", "S256")
+                .build()
+                .encode()
+                .toUriString();
+
+        return new GoogleAuthorizationResponse(
+                authorizationUrl,
+                state,
+                googleOauthProperties.getAuthorizationStateTtlSeconds()
+        );
+    }
+
+    private TokenResponse signupBuyer(GoogleIdentity identity, GoogleAuthorizationContext context, String ip) {
+        if (buyerRepository.existsByGoogleSubject(identity.subject())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Buyer already exists");
+        }
+
+        Buyer buyer = buyerRepository.save(Buyer.create(
+                identity.subject(),
+                identity.email(),
+                context.nickname(),
+                context.termsAgreed(),
+                context.privacyPolicyAgreed()
+        ));
+
+        return createSession(buyer.getId(), "ROLE_BUYER", context.device(), ip);
+    }
+
+    private TokenResponse signupSeller(GoogleIdentity identity, GoogleAuthorizationContext context, String ip) {
+        if (sellerRepository.existsByGoogleSubject(identity.subject())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Seller already exists");
+        }
+
+        Seller seller = sellerRepository.save(Seller.create(
+                identity.subject(),
+                identity.email(),
+                context.nickname(),
+                context.termsAgreed(),
+                context.privacyPolicyAgreed(),
+                context.businessRegistrationCertificateUrl()
+        ));
+
+        return createSession(seller.getId(), "ROLE_SELLER", context.device(), ip);
+    }
+
+    private TokenResponse login(GoogleIdentity identity, GoogleAuthorizationContext context, String ip) {
+        if (context.memberType() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Member type is required");
+        }
+
+        return switch (context.memberType()) {
+            case BUYER -> buyerRepository.findByGoogleSubject(identity.subject())
+                    .filter(Buyer::isActive)
+                    .map(buyer -> createSession(buyer.getId(), context.memberType().roleName(), context.device(), ip))
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Buyer is not registered"));
+            case SELLER -> sellerRepository.findByGoogleSubject(identity.subject())
+                    .filter(Seller::isActive)
+                    .map(seller -> createSession(seller.getId(), context.memberType().roleName(), context.device(), ip))
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Seller is not registered"));
+        };
+    }
+
+    private String nextCodeVerifier() {
+        byte[] bytes = new byte[64];
+        SECURE_RANDOM.nextBytes(bytes);
+        return URL_ENCODER.encodeToString(bytes);
+    }
+
+    private String toCodeChallenge(String codeVerifier) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashed = digest.digest(codeVerifier.getBytes(StandardCharsets.US_ASCII));
+            return URL_ENCODER.encodeToString(hashed);
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("SHA-256 algorithm is not available", exception);
+        }
     }
 
     private String normalizeOptionalText(String value) {
