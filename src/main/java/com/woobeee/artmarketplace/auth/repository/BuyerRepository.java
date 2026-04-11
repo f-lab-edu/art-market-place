@@ -1,0 +1,12 @@
+package com.woobeee.artmarketplace.auth.repository;
+
+import java.util.Optional;
+
+import com.woobeee.artmarketplace.auth.entity.Buyer;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BuyerRepository extends JpaRepository<Buyer, Long> {
+    boolean existsByGoogleSubject(String googleSubject);
+
+    Optional<Buyer> findByGoogleSubject(String googleSubject);
+}
