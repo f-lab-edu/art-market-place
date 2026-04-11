@@ -7,6 +7,12 @@ server:
 oauth:
   google:
     client-id: 985212099499-uel8drlne8o4et7e3u1gbnjjvdi0k11l.apps.googleusercontent.com
+    client-secret: ${GOOGLE_CLIENT_SECRET:change-me}
+    redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:3000/auth/google/callback}
+    authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+    token-uri: https://oauth2.googleapis.com/token
+    scope: openid email profile
+    authorization-state-ttl-seconds: 600
 
 spring:
   application:

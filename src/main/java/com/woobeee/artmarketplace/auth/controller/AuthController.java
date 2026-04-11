@@ -2,8 +2,10 @@ package com.woobeee.artmarketplace.auth.controller;
 
 import com.woobeee.artmarketplace.auth.api.ApiResponse;
 import com.woobeee.artmarketplace.auth.api.request.BuyerSignupRequest;
+import com.woobeee.artmarketplace.auth.api.request.GoogleAuthorizationCallbackRequest;
 import com.woobeee.artmarketplace.auth.api.request.LoginRequest;
 import com.woobeee.artmarketplace.auth.api.request.SellerSignupRequest;
+import com.woobeee.artmarketplace.auth.api.response.GoogleAuthorizationResponse;
 import com.woobeee.artmarketplace.auth.api.response.TokenResponse;
 import com.woobeee.artmarketplace.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,34 +25,44 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping("/signup/buyers")
-    @Operation(summary = "구매자 회원가입", description = "Google OAuth 2.0 ID 토큰으로 구매자 회원가입 후 access/refresh token을 발급합니다.")
-    public ApiResponse<TokenResponse> signupBuyer(
-            @Valid @RequestBody BuyerSignupRequest request,
-            HttpServletRequest httpServletRequest
+    @PostMapping("/signup/buyers/authorize")
+    @Operation(summary = "구매자 회원가입 authorization 시작", description = "Authorization Code + PKCE용 Google authorization URL을 발급합니다.")
+    public ApiResponse<GoogleAuthorizationResponse> signupBuyer(
+            @Valid @RequestBody BuyerSignupRequest request
     ) {
-        TokenResponse response = authService.signupBuyer(request, resolveClientIp(httpServletRequest));
-        return ApiResponse.success(response, "Buyer signup completed");
+        GoogleAuthorizationResponse response = authService.signupBuyer(request);
+        return ApiResponse.success(response, "Buyer signup authorization created");
     }
 
-    @PostMapping("/signup/sellers")
-    @Operation(summary = "판매자 회원가입", description = "Google OAuth 2.0 ID 토큰으로 판매자 회원가입 후 access/refresh token을 발급합니다.")
-    public ApiResponse<TokenResponse> signupSeller(
-            @Valid @RequestBody SellerSignupRequest request,
-            HttpServletRequest httpServletRequest
+    @PostMapping("/signup/sellers/authorize")
+    @Operation(summary = "판매자 회원가입 authorization 시작", description = "Authorization Code + PKCE용 Google authorization URL을 발급합니다.")
+    public ApiResponse<GoogleAuthorizationResponse> signupSeller(
+            @Valid @RequestBody SellerSignupRequest request
     ) {
-        TokenResponse response = authService.signupSeller(request, resolveClientIp(httpServletRequest));
-        return ApiResponse.success(response, "Seller signup completed");
+        GoogleAuthorizationResponse response = authService.signupSeller(request);
+        return ApiResponse.success(response, "Seller signup authorization created");
     }
 
-    @PostMapping("/login")
-    @Operation(summary = "로그인", description = "Google OAuth 2.0 ID 토큰과 회원 유형으로 로그인 후 access/refresh token을 발급합니다.")
-    public ApiResponse<TokenResponse> login(
-            @Valid @RequestBody LoginRequest request,
+    @PostMapping("/login/authorize")
+    @Operation(summary = "로그인 authorization 시작", description = "Authorization Code + PKCE용 Google authorization URL을 발급합니다.")
+    public ApiResponse<GoogleAuthorizationResponse> login(
+            @Valid @RequestBody LoginRequest request
+    ) {
+        GoogleAuthorizationResponse response = authService.login(request);
+        return ApiResponse.success(response, "Login authorization created");
+    }
+
+    @PostMapping("/callback/google")
+    @Operation(summary = "Google authorization callback 처리", description = "Google authorization code와 state를 교환해 access/refresh token을 발급합니다.")
+    public ApiResponse<TokenResponse> completeGoogleAuthorization(
+            @Valid @RequestBody GoogleAuthorizationCallbackRequest request,
             HttpServletRequest httpServletRequest
     ) {
-        TokenResponse response = authService.login(request, resolveClientIp(httpServletRequest));
-        return ApiResponse.success(response, "Login completed");
+        TokenResponse response = authService.completeGoogleAuthorization(
+                request,
+                resolveClientIp(httpServletRequest)
+        );
+        return ApiResponse.success(response, "Google authorization completed");
     }
 
     private String resolveClientIp(HttpServletRequest request) {
