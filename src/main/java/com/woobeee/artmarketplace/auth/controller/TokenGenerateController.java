@@ -8,6 +8,7 @@ import com.woobeee.artmarketplace.auth.service.TokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,10 +24,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenGenerateController {
     private final TokenService tokenService;
 
+    @PostMapping("/issue")
+    @Operation(summary = "토큰 발급", description = "member ID, role, device 기준으로 access token, refresh token을 발급합니다.")
+    public ApiResponse<TokenResponse> issue(
+            @Valid @RequestBody TokenIssueRequest request,
+            HttpServletRequest httpServletRequest
+    ) {
+        TokenResponse response = tokenService.issue(
+                request.memberId(),
+                request.role(),
+                request.device(),
+                resolveClientIp(httpServletRequest)
+        );
+
+        return ApiResponse.success(response, "Token issued");
+    }
+
     @PostMapping("/refresh")
     @Operation(summary = "토큰 재발급", description = "refresh token 검증 후 access token, refresh token을 재발급합니다.")
     public ApiResponse<TokenResponse> refresh(
-            @RequestBody TokenRefreshRequest request,
+            @Valid @RequestBody TokenRefreshRequest request,
             HttpServletRequest httpServletRequest
     ) {
         TokenResponse response = tokenService.refresh(

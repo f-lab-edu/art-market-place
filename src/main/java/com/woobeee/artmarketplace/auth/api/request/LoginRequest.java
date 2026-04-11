@@ -1,0 +1,15 @@
+package com.woobeee.artmarketplace.auth.api.request;
+
+import com.woobeee.artmarketplace.auth.entity.MemberType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record LoginRequest(
+        @NotBlank(message = "Google ID token is required")
+        String idToken,
+        @NotNull(message = "Member type is required")
+        MemberType memberType,
+        @NotBlank(message = "Device is required")
+        String device
+) {
+}
