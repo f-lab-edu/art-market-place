@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="74f3741e-e641-40ae-afa3-d3129e2d1f5c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/entity/Address.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/entity/Buyer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/entity/Seller.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/api/request/TokenIssueRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/api/request/TokenIssueRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/api/request/TokenRefreshRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/api/request/TokenRefreshRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/controller/TokenGenerateController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/auth/controller/TokenGenerateController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/ArtMarketPlaceApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/ArtMarketPlaceApplicationTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,6 +69,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "JUnit.AccessTokenProviderTest.generateAccessToken_containsExpectedClaims.executor": "Run",
+    "JUnit.AuthControllerTest.executor": "Run",
     "JUnit.AuthTokenServiceImplTest.executor": "Run",
     "JUnit.IdempotencyAspectTest.executor": "Run",
     "JUnit.IdempotencyServiceImplTest.begin_whenFirstRequest_returnsFreshProceedResult.executor": "Run",
@@ -160,32 +153,17 @@
       </map>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration name="AuthTokenServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="auth" />
+  <component name="RunManager" selected="JUnit.AuthControllerTest">
+    <configuration name="AuthControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="art-market-place" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.woobeee.auth.service.*" />
+          <option name="PATTERN" value="com.woobeee.artmarketplace.auth.controller.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.woobeee.auth.service" />
-      <option name="MAIN_CLASS_NAME" value="com.woobeee.auth.service.AuthTokenServiceImplTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="OauthUserCredentialServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="auth" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.woobeee.auth.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.woobeee.auth.service" />
-      <option name="MAIN_CLASS_NAME" value="com.woobeee.auth.service.OauthUserCredentialServiceImplTest" />
+      <option name="PACKAGE_NAME" value="com.woobeee.artmarketplace.auth.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.woobeee.artmarketplace.auth.controller.AuthControllerTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -216,6 +194,21 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.woobeee.auth.producer" />
       <option name="MAIN_CLASS_NAME" value="com.woobeee.auth.producer.OutboxSendingRecoverySchedulerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TokenGenerateControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="art-market-place" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.woobeee.artmarketplace.auth.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.woobeee.artmarketplace.auth.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.woobeee.artmarketplace.auth.controller.TokenGenerateControllerTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -277,11 +270,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.AuthControllerTest" />
+        <item itemvalue="JUnit.TokenGenerateControllerTest" />
         <item itemvalue="JUnit.UserCredentialControllerIntegrationTest" />
         <item itemvalue="JUnit.OutboxSendingRecoverySchedulerTest" />
         <item itemvalue="JUnit.OutboxProducerSchedulerTest" />
-        <item itemvalue="JUnit.OauthUserCredentialServiceImplTest" />
-        <item itemvalue="JUnit.AuthTokenServiceImplTest" />
       </list>
     </recent_temporary>
   </component>
@@ -302,7 +295,7 @@
       <updated>1774882469051</updated>
       <workItem from="1774882470123" duration="4013000" />
       <workItem from="1774967385769" duration="14202000" />
-      <workItem from="1775746628453" duration="11799000" />
+      <workItem from="1775746628453" duration="13170000" />
     </task>
     <servers />
   </component>
