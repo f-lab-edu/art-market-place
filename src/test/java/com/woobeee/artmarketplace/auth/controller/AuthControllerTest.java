@@ -46,7 +46,7 @@ class AuthControllerTest {
         );
         when(authService.signupBuyer(eq(request))).thenReturn(response);
 
-        mockMvc.perform(post("/api/auth/signup/buyers/authorize")
+        mockMvc.perform(post("/api/auth/signup/buyers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -69,7 +69,7 @@ class AuthControllerTest {
         );
         when(authService.login(eq(request))).thenReturn(response);
 
-        mockMvc.perform(post("/api/auth/login/authorize")
+        mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -86,7 +86,7 @@ class AuthControllerTest {
         TokenResponse tokenResponse = new TokenResponse("access-77", 900, "refresh-77", 2_592_000);
         when(authService.completeGoogleAuthorization(eq(request), eq("10.0.0.5"))).thenReturn(tokenResponse);
 
-        mockMvc.perform(post("/api/auth/callback/google")
+        mockMvc.perform(post("/api/auth/callback-google")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Real-IP", "10.0.0.5")
                         .content(objectMapper.writeValueAsString(request)))
@@ -103,7 +103,7 @@ class AuthControllerTest {
     void signupBuyerRejectsInvalidRequestBody() throws Exception {
         BuyerSignupRequest request = new BuyerSignupRequest(" ", true, true, "ios");
 
-        mockMvc.perform(post("/api/auth/signup/buyers/authorize")
+        mockMvc.perform(post("/api/auth/signup/buyers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())

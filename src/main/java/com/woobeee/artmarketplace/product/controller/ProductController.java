@@ -1,0 +1,66 @@
+package com.woobeee.artmarketplace.product.controller;
+
+import com.woobeee.artmarketplace.product.api.ApiResponse;
+import com.woobeee.artmarketplace.product.api.request.ProductCreateRequest;
+import com.woobeee.artmarketplace.product.api.request.ProductImageRecoveryRequest;
+import com.woobeee.artmarketplace.product.api.request.ProductImagePresignedUrlRequest;
+import com.woobeee.artmarketplace.product.api.response.PresignedUploadResponse;
+import com.woobeee.artmarketplace.product.api.response.ProductCreateResponse;
+import com.woobeee.artmarketplace.product.api.response.ProductImageRecoveryResponse;
+import com.woobeee.artmarketplace.product.service.ProductImageStorageService;
+import com.woobeee.artmarketplace.product.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/products")
+@Tag(name = "Product Controller", description = "상품 등록 및 상품 이미지 업로드 컨트롤러")
+@RequiredArgsConstructor
+public class ProductController {
+    private final ProductImageStorageService productImageStorageService;
+    private final ProductService productService;
+
+    @PostMapping("/images")
+    @Operation(
+            summary = "상품 이미지 Presigned URL 발급",
+            description = "클라이언트가 S3/MinIO temp 경로에 직접 업로드할 PUT URL을 발급합니다.")
+    public ApiResponse<PresignedUploadResponse> createImagePresignedUrl(
+            @Valid @RequestBody ProductImagePresignedUrlRequest request
+    ) {
+        PresignedUploadResponse response = productImageStorageService.createPresignedUploadUrl(request);
+        return ApiResponse.success(response, "Product image presigned URL created");
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+            summary = "상품 등록",
+            description = "업로드 완료된 temp 이미지 key로 상품을 등록하고 커밋 후 products 경로로 이미지를 이동합니다.")
+    public ApiResponse<ProductCreateResponse> createProduct(
+            @Valid @RequestBody ProductCreateRequest request
+    ) {
+        ProductCreateResponse response = productService.createProduct(request);
+        return ApiResponse.createSuccess(response, "Product created");
+    }
+
+    @PostMapping("/{productId}/images")
+    @Operation(
+            summary = "상품 이미지 수동 복구",
+            description = "이미지 이동에 실패한 상품에 새 temp 이미지 key를 연결하고 커밋 후 products 경로로 이동합니다.")
+    public ApiResponse<ProductImageRecoveryResponse> recoverProductImages(
+            @PathVariable Long productId,
+            @Valid @RequestBody ProductImageRecoveryRequest request
+    ) {
+        ProductImageRecoveryResponse response = productService.recoverProductImages(productId, request);
+        return ApiResponse.success(response, "Product image recovery requested");
+    }
+}

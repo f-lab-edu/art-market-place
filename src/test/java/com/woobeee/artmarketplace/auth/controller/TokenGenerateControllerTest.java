@@ -39,7 +39,7 @@ class TokenGenerateControllerTest {
         TokenResponse tokenResponse = new TokenResponse("issued-access", 900, "issued-refresh", 2_592_000);
         when(tokenService.issue(7L, "ROLE_BUYER", "web", "192.0.2.10")).thenReturn(tokenResponse);
 
-        mockMvc.perform(post("/api/auth/tokens/issue")
+        mockMvc.perform(post("/api/auth/access-tokens")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Real-IP", "192.0.2.10")
                         .content(objectMapper.writeValueAsString(request)))
@@ -58,7 +58,7 @@ class TokenGenerateControllerTest {
         TokenResponse tokenResponse = new TokenResponse("new-access", 900, "new-refresh", 2_592_000);
         when(tokenService.refresh("refresh-token", "ios", "203.0.113.20")).thenReturn(tokenResponse);
 
-        mockMvc.perform(post("/api/auth/tokens/refresh")
+        mockMvc.perform(post("/api/auth/refresh-tokens")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Forwarded-For", "203.0.113.20")
                         .content(objectMapper.writeValueAsString(request)))
@@ -75,7 +75,7 @@ class TokenGenerateControllerTest {
     void refreshRejectsInvalidRequestBody() throws Exception {
         TokenRefreshRequest request = new TokenRefreshRequest(" ", "ios");
 
-        mockMvc.perform(post("/api/auth/tokens/refresh")
+        mockMvc.perform(post("/api/auth/refresh-tokens")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping("/signup/buyers/authorize")
+    @PostMapping("/signup/buyers")
     @Operation(summary = "구매자 회원가입 authorization 시작", description = "Authorization Code + PKCE용 Google authorization URL을 발급합니다.")
     public ApiResponse<GoogleAuthorizationResponse> signupBuyer(
             @Valid @RequestBody BuyerSignupRequest request
@@ -34,7 +34,7 @@ public class AuthController {
         return ApiResponse.success(response, "Buyer signup authorization created");
     }
 
-    @PostMapping("/signup/sellers/authorize")
+    @PostMapping("/signup/sellers")
     @Operation(summary = "판매자 회원가입 authorization 시작", description = "Authorization Code + PKCE용 Google authorization URL을 발급합니다.")
     public ApiResponse<GoogleAuthorizationResponse> signupSeller(
             @Valid @RequestBody SellerSignupRequest request
@@ -43,7 +43,7 @@ public class AuthController {
         return ApiResponse.success(response, "Seller signup authorization created");
     }
 
-    @PostMapping("/login/authorize")
+    @PostMapping("/login")
     @Operation(summary = "로그인 authorization 시작", description = "Authorization Code + PKCE용 Google authorization URL을 발급합니다.")
     public ApiResponse<GoogleAuthorizationResponse> login(
             @Valid @RequestBody LoginRequest request
@@ -52,7 +52,7 @@ public class AuthController {
         return ApiResponse.success(response, "Login authorization created");
     }
 
-    @PostMapping("/callback/google")
+    @PostMapping("/callback-google")
     @Operation(summary = "Google authorization callback 처리", description = "Google authorization code와 state를 교환해 access/refresh token을 발급합니다.")
     public ApiResponse<TokenResponse> completeGoogleAuthorization(
             @Valid @RequestBody GoogleAuthorizationCallbackRequest request,

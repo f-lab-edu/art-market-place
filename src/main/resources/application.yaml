@@ -14,6 +14,16 @@ oauth:
     scope: openid email profile
     authorization-state-ttl-seconds: 600
 
+storage:
+  s3:
+    endpoint: ${S3_ENDPOINT:http://localhost:9000}
+    region: ${S3_REGION:ap-northeast-2}
+    bucket: ${S3_BUCKET:woobeee}
+    access-key: ${S3_ACCESS_KEY:admin}
+    secret-key: ${S3_SECRET_KEY:admin!23}
+    presigned-url-expiration-seconds: 600
+    path-style-access-enabled: true
+
 spring:
   application:
     name: art-market-place
