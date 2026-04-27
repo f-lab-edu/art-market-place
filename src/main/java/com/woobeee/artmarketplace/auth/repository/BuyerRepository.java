@@ -9,4 +9,6 @@ public interface BuyerRepository extends JpaRepository<Buyer, Long> {
     boolean existsByGoogleSubject(String googleSubject);
 
     Optional<Buyer> findByGoogleSubject(String googleSubject);
+
+    Optional<Buyer> findByEmail(String email);
 }

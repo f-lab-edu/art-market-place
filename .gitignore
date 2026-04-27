@@ -26,3 +26,31 @@ logs/
 
 # Docker local data
 .docker-compose/.docker-volumes/
+
+
+# Node 의존성
+front/node_modules/
+
+# 빌드 결과물
+front/.next/
+front/out/
+
+# 환경변수 파일
+front/.env
+front/.env.local
+front/.env.development.local
+front/.env.test.local
+front/.env.production.local
+
+# OS/IDE 생성 파일
+front/.DS_Store
+front/*.log
+front/.idea/
+front/.vscode/
+front/node_modules
+
+# 패키지 매니저 캐시
+front/npm-debug.log*
+front/yarn-debug.log*
+front/yarn-error.log*
+front/pnpm-debug.log*
