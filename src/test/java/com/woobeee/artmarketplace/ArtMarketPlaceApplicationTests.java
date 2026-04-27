@@ -9,6 +9,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.woobeee.artmarketplace.auth.service.AuthService;
 import com.woobeee.artmarketplace.auth.service.TokenService;
+import com.woobeee.artmarketplace.product.service.ProductImageStorageService;
+import com.woobeee.artmarketplace.product.service.ProductService;
 
 @SpringBootTest
 @ImportAutoConfiguration(exclude = {
@@ -21,6 +23,12 @@ class ArtMarketPlaceApplicationTests {
 
     @MockitoBean
     private TokenService tokenService;
+
+    @MockitoBean
+    private ProductImageStorageService productImageStorageService;
+
+    @MockitoBean
+    private ProductService productService;
 
     @Test
     void contextLoads() {
