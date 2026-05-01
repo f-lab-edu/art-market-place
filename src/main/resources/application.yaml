@@ -42,10 +42,10 @@ spring:
         highlight_sql: true
         auto_quote_keyword: true
         hbm2ddl:
-          auto: none
+          auto: validate
 
   datasource:
-    url: jdbc:postgresql://localhost:9433/credential
+    url: jdbc:postgresql://localhost:9432/market
     username: root
     password: 123456789
     driver-class-name: org.postgresql.Driver

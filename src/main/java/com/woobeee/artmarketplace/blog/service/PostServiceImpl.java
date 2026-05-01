@@ -1,7 +1,6 @@
 package com.woobeee.artmarketplace.blog.service;
 
 
-import com.woobeee.artmarketplace.blog.config.MinioConfig;
 import com.woobeee.artmarketplace.blog.api.request.PostPostRequest;
 import com.woobeee.artmarketplace.blog.api.response.GetPostResponse;
 import com.woobeee.artmarketplace.blog.api.response.GetPostsResponse;
@@ -17,6 +16,7 @@ import com.woobeee.artmarketplace.blog.repository.LikeRepository;
 import com.woobeee.artmarketplace.blog.repository.PostRepository;
 import com.woobeee.artmarketplace.blog.support.ProgressInputStream;
 import com.woobeee.artmarketplace.blog.support.RedisSupport;
+import com.woobeee.artmarketplace.product.config.StorageProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -56,7 +56,7 @@ public class PostServiceImpl implements PostService {
 
     private final RedisSupport redisSupport;
     private final S3Client s3Client;
-    private final MinioConfig.MinioProperties minio;
+    private final StorageProperties storageProperties;
     private final S3Presigner s3Presigner;
 
     /**
@@ -120,7 +120,7 @@ public class PostServiceImpl implements PostService {
                 ) {
                     s3Client.putObject(
                             PutObjectRequest.builder()
-                                    .bucket(minio.getBucket())
+                                    .bucket(storageProperties.getBucket())
                                     .key(key)
                                     .contentType(file.getContentType())
                                     .build(),
@@ -131,7 +131,7 @@ public class PostServiceImpl implements PostService {
                 }
 
                 // ${파일명} -> https://<endpoint>/<bucket>/<postId>/<파일명>
-//                String publicUrl = minio.getEndpoint() + "/" + minio.getBucket() + "/" + key;
+//                String publicUrl = storageProperties.getEndpoint() + "/" + storageProperties.getBucket() + "/" + key;
 //
 //                if (!markdownEnString.isBlank())
 //                    markdownEnString = markdownEnString.replace("${" + fileName + "}", publicUrl);
@@ -233,14 +233,14 @@ public class PostServiceImpl implements PostService {
 
     private String publicUrl(Long postId, String fileName) {
         String base = "https://woobeee.com";
-        String bucket = minio.getBucket();
+        String bucket = storageProperties.getBucket();
         String key = postId + "/" + fileName;
         return String.format("%s/%s/%s", base, bucket, key);
     }
 
     private String generatePresignedUrl(Long postId, String fileName) {
         GetObjectRequest getReq = GetObjectRequest.builder()
-                .bucket(minio.getBucket())
+                .bucket(storageProperties.getBucket())
                 .key(postId + "/" + fileName)
                 .build();
 
