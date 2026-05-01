@@ -1,0 +1,21 @@
+{
+  "validation": {
+    "commands": [
+      "./mvnw test -Dspring.jpa.hibernate.ddl-auto=validate -Dspring.jpa.properties.hibernate.hbm2ddl.auto=validate 2>&1",
+      "cd front && npm run build 2>&1"
+    ]
+  },
+  "commandGuards": {
+    "blockedPatterns": [
+      "rm\\s+-rf",
+      "git\\s+push\\s+--force",
+      "git\\s+reset\\s+--hard",
+      "DROP\\s+TABLE",
+      "TRUNCATE\\s+TABLE"
+    ]
+  },
+  "notes": [
+    "Codex CLI does not automatically execute Claude-style hooks from .codex/settings.json.",
+    "Use this file as project-local validation and guard metadata for Codex/Harness workflows."
+  ]
+}
