@@ -12,22 +12,7 @@ services:
       TZ: Asia/Seoul
     volumes:
       - .docker-volumes/postgres/market:/var/lib/postgresql
-      - .docker-volumes/postgres/init:/docker-entrypoint-initdb.d
-
-  postgres-credential:
-    image: postgres:18
-    container_name: credential-db
-    restart: always
-    ports:
-      - 9433:5432
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: 123456789
-      POSTGRES_DB: credential
-      TZ: Asia/Seoul
-    volumes:
-      - .docker-volumes/postgres/credential:/var/lib/postgresql
-      - .docker-volumes/postgres/init:/docker-entrypoint-initdb.d
+      - .docker-volumes/postgres/init:/docker-entrypoint-initdb.dßß
 
   redis:
     image: redis:latest
