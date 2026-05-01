@@ -115,7 +115,7 @@ export default function PostList({
                             }
                         }}
                     >
-                        <Link href={`/post/${post.id}`}>
+                        <Link href={`/blog/${post.id}`}>
                             <CardHeader className="pb-3">
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex-1">

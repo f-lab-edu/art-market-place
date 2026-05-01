@@ -6,7 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="74f3741e-e641-40ae-afa3-d3129e2d1f5c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/SchemaValidationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/SchemaValidationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AGENTS.md" beforeDir="false" afterPath="$PROJECT_DIR$/AGENTS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ADR.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ADR.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ARCHITECTURE.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ARCHITECTURE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/DESIGN.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/DESIGN.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/FRONTEND.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/FRONTEND.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/PRD.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/PRD.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -304,7 +309,7 @@
       <workItem from="1777106056155" duration="1390000" />
       <workItem from="1777194847166" duration="1656000" />
       <workItem from="1777291737991" duration="7482000" />
-      <workItem from="1777611950472" duration="5933000" />
+      <workItem from="1777611950472" duration="6540000" />
     </task>
     <servers />
   </component>

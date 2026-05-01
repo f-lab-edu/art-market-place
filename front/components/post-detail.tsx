@@ -37,7 +37,7 @@
 //   }
 //
 //   const handleShare = async () => {
-//     const url = `${window.location.origin}/post/${post.id}`
+//     const url = `${window.location.origin}/blog/${post.id}`
 //
 //     if (navigator.share) {
 //       try {
@@ -210,7 +210,7 @@ export default function PostDetail({ postId }: PostDetailProps) {
 
   const handleShare = async () => {
     if (!post) return
-    const url = `${window.location.origin}/post/${post.id}`
+    const url = `${window.location.origin}/blog/${post.id}`
 
     // 클립보드 복사: HTTPS(또는 localhost)에서 동작
     if (navigator.clipboard && window.isSecureContext) {

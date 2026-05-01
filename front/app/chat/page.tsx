@@ -119,7 +119,7 @@ export default function ChatWidget() {
                         const urlPattern = /(https:\/\/[^\s]*?)(\d+)(?=[^\w]*$|[\s])/g;
 
                         acc = acc.replace(urlPattern, (match, baseUrl, num) => {
-                            return ` \n  - http://woobeee.com/post/${num}\n`;
+                            return ` \n  - http://woobeee.com/blog/${num}\n`;
                         });
 
                         setMsgs((prev) => {

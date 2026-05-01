@@ -61,7 +61,7 @@ export default function BlogPage() {
 
   const handlePostSelect = (post: Post) => {
     setSelectedPost(post)
-    router.push(`/post/${post.id}`)
+    router.push(`/blog/${post.id}`)
   }
 
   const handleHome = () => {
