@@ -12,7 +12,7 @@ services:
       TZ: Asia/Seoul
     volumes:
       - .docker-volumes/postgres/market:/var/lib/postgresql
-      - .docker-volumes/postgres/init:/docker-entrypoint-initdb.dßß
+      - .docker-volumes/postgres/init:/docker-entrypoint-initdb.d
 
   redis:
     image: redis:latest
