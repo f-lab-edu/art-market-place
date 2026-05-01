@@ -4,9 +4,8 @@ package com.woobeee.artmarketplace.blog.service;
 import com.woobeee.artmarketplace.blog.api.request.PostPostRequest;
 import com.woobeee.artmarketplace.blog.api.response.GetPostResponse;
 import com.woobeee.artmarketplace.blog.api.response.GetPostsResponse;
-import com.woobeee.artmarketplace.blog.entity.Category;
-import com.woobeee.artmarketplace.blog.entity.Like;
-import com.woobeee.artmarketplace.blog.entity.Post;
+import com.woobeee.artmarketplace.blog.entity.Categories;
+import com.woobeee.artmarketplace.blog.entity.Posts;
 import com.woobeee.artmarketplace.blog.exception.CustomAuthenticationException;
 import com.woobeee.artmarketplace.blog.exception.CustomInternalServerException;
 import com.woobeee.artmarketplace.blog.exception.CustomNotFoundException;
@@ -81,7 +80,7 @@ public class PostServiceImpl implements PostService {
                 ? new String(markdownKr.getBytes(), StandardCharsets.UTF_8)
                 : "";
 
-        Post post = new Post(
+        Posts post = new Posts(
                 request.titleKo(),
                 request.titleEn(),
                 markdownKrString,
@@ -153,7 +152,7 @@ public class PostServiceImpl implements PostService {
     public void deletePost(Long postId, String loginId) {
         AuthMemberResolver.MemberIdentity memberIdentity = authMemberResolver.requireByLoginId(loginId);
 
-        Post post = postRepository.findById(postId)
+        Posts post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomNotFoundException(ErrorCode.post_notFound));
 
         if (!post.getMemberId().equals(memberIdentity.memberId())
@@ -167,7 +166,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public GetPostResponse getPost(Long postId, String locale, String loginId, HttpServletRequest request) {
-        Post post = postRepository.findById(postId)
+        Posts post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomNotFoundException(ErrorCode.post_notFound));
 
         long redisAfter = redisSupport.incrementPostViewAndRanking(postId, request);
@@ -181,13 +180,16 @@ public class PostServiceImpl implements PostService {
                 .map(cat -> locale.equalsIgnoreCase("en") ? cat.getNameEn() : cat.getNameKo())
                 .orElse("Unknown");
 
-        Long likeCount = likeRepository.countById_PostId(post.getId());
+        Long likeCount = likeRepository.countByPostId(post.getId());
 
         Boolean isLiked = false;
         if (loginId != null) {
             isLiked = authMemberResolver.findByLoginId(loginId)
-                    .map(memberIdentity -> likeRepository.existsById(
-                            new Like.LikeId(memberIdentity.memberId(), memberIdentity.role(), post.getId())))
+                    .map(memberIdentity -> likeRepository.existsByMemberIdAndMemberRoleAndPostId(
+                            memberIdentity.memberId(),
+                            memberIdentity.role(),
+                            post.getId()
+                    ))
                     .orElse(false);
         }
 
@@ -255,7 +257,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public GetPostsResponse getAllPost(String q, String locale, Long categoryId, Pageable pageable) {
-        Page<Post> posts;
+        Page<Posts> posts;
 
         if (q != null && categoryId != null) {
             List<Long> categories = findAllChildIdsIncludingSelf(categoryId);
@@ -293,7 +295,7 @@ public class PostServiceImpl implements PostService {
                     .orElse("Unknown");
 
             long redisAfter = redisSupport.getCurrentPostView(post.getId());
-            Long likeCount = likeRepository.countById_PostId(post.getId());
+            Long likeCount = likeRepository.countByPostId(post.getId());
 
             return new GetPostsResponse.PostContent(
                     post.getId(),
@@ -313,8 +315,8 @@ public class PostServiceImpl implements PostService {
     public List<Long> findAllChildIdsIncludingSelf(Long parentId) {
         List<Long> ids = new ArrayList<>();
         ids.add(parentId);
-        List<Category> children = categoryRepository.findAllByParentId(parentId);
-        for (Category child : children) {
+        List<Categories> children = categoryRepository.findAllByParentId(parentId);
+        for (Categories child : children) {
             ids.addAll(findAllChildIdsIncludingSelf(child.getId()));
         }
         return ids;

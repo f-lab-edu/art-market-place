@@ -1,6 +1,6 @@
 package com.woobeee.artmarketplace.blog.service;
 
-import com.woobeee.artmarketplace.blog.entity.Like;
+import com.woobeee.artmarketplace.blog.entity.Likes;
 import com.woobeee.artmarketplace.blog.exception.CustomAuthenticationException;
 import com.woobeee.artmarketplace.blog.exception.CustomNotFoundException;
 import com.woobeee.artmarketplace.blog.exception.ErrorCode;
@@ -27,7 +27,15 @@ public class LikeServiceImpl implements LikeService{
 
         AuthMemberResolver.MemberIdentity memberIdentity = authMemberResolver.requireByLoginId(loginId);
 
-        Like like = new Like(memberIdentity.memberId(), memberIdentity.role(), postId);
+        if (likeRepository.existsByMemberIdAndMemberRoleAndPostId(
+                memberIdentity.memberId(),
+                memberIdentity.role(),
+                postId
+        )) {
+            return;
+        }
+
+        Likes like = new Likes(memberIdentity.memberId(), memberIdentity.role(), postId);
         likeRepository.save(like);
     }
 
@@ -39,8 +47,8 @@ public class LikeServiceImpl implements LikeService{
 
         AuthMemberResolver.MemberIdentity memberIdentity = authMemberResolver.requireByLoginId(loginId);
 
-        Like like = likeRepository
-                .findById(new Like.LikeId(memberIdentity.memberId(), memberIdentity.role(), postId))
+        Likes like = likeRepository
+                .findByMemberIdAndMemberRoleAndPostId(memberIdentity.memberId(), memberIdentity.role(), postId)
                 .orElseThrow();
 
         likeRepository.delete(like);

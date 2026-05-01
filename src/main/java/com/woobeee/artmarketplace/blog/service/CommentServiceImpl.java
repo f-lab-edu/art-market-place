@@ -2,7 +2,7 @@ package com.woobeee.artmarketplace.blog.service;
 
 import com.woobeee.artmarketplace.blog.api.request.PostCommentRequest;
 import com.woobeee.artmarketplace.blog.api.response.GetCommentResponse;
-import com.woobeee.artmarketplace.blog.entity.Comment;
+import com.woobeee.artmarketplace.blog.entity.Comments;
 import com.woobeee.artmarketplace.blog.exception.CustomAuthenticationException;
 import com.woobeee.artmarketplace.blog.exception.CustomNotFoundException;
 import com.woobeee.artmarketplace.blog.exception.ErrorCode;
@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
 
         AuthMemberResolver.MemberIdentity memberIdentity = authMemberResolver.requireByLoginId(loginId);
 
-        Comment comment = new Comment (
+        Comments comment = new Comments (
                 request.content(),
                 request.postId(),
                 request.parentId(),
@@ -58,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
 
         AuthMemberResolver.MemberIdentity memberIdentity = authMemberResolver.requireByLoginId(loginId);
 
-        Comment comment = commentRepository.findById(commentId)
+        Comments comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
 
         if (!comment.getMemberId().equals(memberIdentity.memberId())
@@ -75,13 +75,13 @@ public class CommentServiceImpl implements CommentService {
             Long postId,
             String loginId
     ) {
-        List<Comment> comments = commentRepository.findAllByPostId(postId);
+        List<Comments> comments = commentRepository.findAllByPostId(postId);
 
         Map<Long, GetCommentResponse> map = new HashMap<>();
 
         List<GetCommentResponse> roots = new ArrayList<>();
 
-        for (Comment comment : comments) {
+        for (Comments comment : comments) {
             String authorLoginId = authMemberResolver.resolveLoginId(comment.getMemberId(), comment.getMemberRole());
 
             map.put(comment.getId(), new GetCommentResponse(
@@ -95,7 +95,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         // 4. 댓글 계층 구성
-        for (Comment comment : comments) {
+        for (Comments comment : comments) {
             if (comment.getParentId() == null) {
                 // 최상위 댓글
                 roots.add(map.get(comment.getId()));

@@ -7,11 +7,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 @Entity
+@Table(name = "posts")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Builder
-public class Post {
+public class Posts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,12 +38,12 @@ public class Post {
     private LocalDateTime updatedAt;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    private Category category;
+//    private Categories category;
     private Long categoryId;
     private Long memberId;
     private String memberRole;
 
-    public Post(String titleKo, String titleEn, String textKo, String textEn, Long categoryId, Long memberId, String memberRole) {
+    public Posts(String titleKo, String titleEn, String textKo, String textEn, Long categoryId, Long memberId, String memberRole) {
         this.titleKo = titleKo;
         this.titleEn = titleEn;
         this.textKo = textKo;

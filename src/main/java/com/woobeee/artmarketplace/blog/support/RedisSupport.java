@@ -1,6 +1,6 @@
 package com.woobeee.artmarketplace.blog.support;
 
-import com.woobeee.artmarketplace.blog.entity.Post;
+import com.woobeee.artmarketplace.blog.entity.Posts;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -71,7 +71,7 @@ public class RedisSupport {
         return ids.stream().map(Long::valueOf).toList();
     }
 
-    public long getTotalViews(Post post) {
+    public long getTotalViews(Posts post) {
         long redisIncr = getRedisOnlyViews(post.getId());
         long dbBase = post.getViews() == null ? 0L : post.getViews();
         return dbBase + redisIncr;

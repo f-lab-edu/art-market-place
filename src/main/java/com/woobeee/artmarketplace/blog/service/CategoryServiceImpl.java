@@ -2,7 +2,7 @@ package com.woobeee.artmarketplace.blog.service;
 
 import com.woobeee.artmarketplace.blog.api.request.PostCategoryRequest;
 import com.woobeee.artmarketplace.blog.api.response.GetCategoryResponse;
-import com.woobeee.artmarketplace.blog.entity.Category;
+import com.woobeee.artmarketplace.blog.entity.Categories;
 import com.woobeee.artmarketplace.blog.repository.CategoryRepository;
 import com.woobeee.artmarketplace.blog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void saveCategory(PostCategoryRequest request, Long parentId) {
         categoryRepository.save(
-                new Category (
+                new Categories (
                         request.nameKo(),
                         request.nameEn(),
                         parentId)
@@ -43,7 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
         while (!stack.isEmpty()) {
             Long id = stack.pop();
             ids.add(id);
-            for (Category child : categoryRepository.findAllByParentId(id)) {
+            for (Categories child : categoryRepository.findAllByParentId(id)) {
                 stack.push(child.getId());
             }
         }
@@ -54,17 +54,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<GetCategoryResponse> getCategoryList(String locale) {
-        List<Category> categories = categoryRepository.findAll();
+        List<Categories> categories = categoryRepository.findAll();
         if (categories.isEmpty()) return List.of();
 
         boolean isKo = locale != null && locale.toLowerCase().startsWith("ko");
 
-        Function<Category, String> nameSelector = c -> isKo
+        Function<Categories, String> nameSelector = c -> isKo
                 ? defaultIfBlank(c.getNameKo(), c.getNameEn())
                 : defaultIfBlank(c.getNameEn(), c.getNameKo());
 
         // id 목록
-        List<Long> ids = categories.stream().map(Category::getId).toList();
+        List<Long> ids = categories.stream().map(Categories::getId).toList();
 
         // 각 카테고리에 "직접" 달린 글 수
         Map<Long, Integer> directCountMap = postRepository
@@ -74,14 +74,14 @@ public class CategoryServiceImpl implements CategoryService {
                         c -> (int) c.getCnt()));
 
         // 빠른 조회용 맵
-        Map<Long, Category> byId = categories.stream()
-                .collect(Collectors.toMap(Category::getId, Function.identity()));
+        Map<Long, Categories> byId = categories.stream()
+                .collect(Collectors.toMap(Categories::getId, Function.identity()));
 
         // parentId -> childrenIds 인접 리스트
         Map<Long, List<Long>> childrenByParent = new HashMap<>();
         List<Long> roots = new ArrayList<>();
 
-        for (Category c : categories) {
+        for (Categories c : categories) {
             Long pid = c.getParentId();
             if (pid == null) {
                 roots.add(c.getId());
@@ -103,12 +103,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     private GetCategoryResponse buildCategoryTree(
             Long id,
-            Map<Long, Category> byId,
+            Map<Long, Categories> byId,
             Map<Long, List<Long>> childrenByParent,
             Map<Long, Integer> directCountMap,
-            Function<Category, String> nameSelector
+            Function<Categories, String> nameSelector
     ) {
-        Category me = byId.get(id);
+        Categories me = byId.get(id);
         if (me == null) {
             // 데이터 불일치(부모는 있는데 자식이 없는 등) 방어
             return new GetCategoryResponse(id, null, 0, List.of());
@@ -136,10 +136,10 @@ public class CategoryServiceImpl implements CategoryService {
 
 //    @Override
 //    public List<GetCategoryResponse> getCategoryList(String locale) {
-//        List<Category> categories = categoryRepository.findAll();
+//        List<Categories> categories = categoryRepository.findAll();
 //        if (categories.isEmpty()) return List.of();
 //
-//        List<Long> ids = categories.stream().map(Category::getId).toList();
+//        List<Long> ids = categories.stream().map(Categories::getId).toList();
 //
 //        // 각 카테고리에 "직접" 달린 글 수
 //        Map<Long, Integer> directCountMap = postRepository.countGroupByCategoryId(ids).stream()
@@ -149,13 +149,13 @@ public class CategoryServiceImpl implements CategoryService {
 //                ));
 //
 //        boolean isKo = locale != null && locale.toLowerCase().startsWith("ko");
-//        Function<Category, String> nameSelector = c -> isKo
+//        Function<Categories, String> nameSelector = c -> isKo
 //                ? defaultIfBlank(c.getNameKo(), c.getNameEn())
 //                : defaultIfBlank(c.getNameEn(), c.getNameKo());
 //
 //        // 1) DTO 맵 구성 (초기 postCount는 직접 글 수)
 //        Map<Long, GetCategoryResponse> dtoMap = new HashMap<>(ids.size() * 2);
-//        for (Category c : categories) {
+//        for (Categories c : categories) {
 //            dtoMap.put(
 //                    c.getId(),
 //                    new GetCategoryResponse(
@@ -169,7 +169,7 @@ public class CategoryServiceImpl implements CategoryService {
 //
 //        // 2) 트리 구성
 //        List<GetCategoryResponse> roots = new ArrayList<>();
-//        for (Category c : categories) {
+//        for (Categories c : categories) {
 //            GetCategoryResponse me = dtoMap.get(c.getId());
 //            Long parentId = c.getParentId();
 //            if (parentId == null) {
