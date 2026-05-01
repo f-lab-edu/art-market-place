@@ -5,17 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="74f3741e-e641-40ae-afa3-d3129e2d1f5c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/docs/ADR.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/PRD.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/execute.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/test_execute.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.docker-compose/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.docker-compose/docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/blog/config/MinioConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/blog/service/PostServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/blog/service/PostServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/config/StorageConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/config/StorageConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/SchemaValidationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/SchemaValidationTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +97,7 @@
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "SHELLCHECK.PATH": "/Users/administrator/Library/Application Support/JetBrains/IntelliJIdea2024.1/plugins/Shell Script/shellcheck",
-    "Spring Boot.ArtMarketPlaceApplication.executor": "Debug",
+    "Spring Boot.ArtMarketPlaceApplication.executor": "Run",
     "Spring Boot.AuthApplication.executor": "Run",
     "git-widget-placeholder": "feature/harness",
     "kotlin-language-version-configured": "true",
@@ -159,7 +150,7 @@
         <entry key="SpringBootApplicationConfigurationType">
           <value>
             <map>
-              <entry key="ArtMarketPlaceApplication" value="FAILED" />
+              <entry key="ArtMarketPlaceApplication" value="STOPPED" />
             </map>
           </value>
         </entry>
@@ -313,7 +304,7 @@
       <workItem from="1777106056155" duration="1390000" />
       <workItem from="1777194847166" duration="1656000" />
       <workItem from="1777291737991" duration="7482000" />
-      <workItem from="1777611950472" duration="5669000" />
+      <workItem from="1777611950472" duration="5933000" />
     </task>
     <servers />
   </component>

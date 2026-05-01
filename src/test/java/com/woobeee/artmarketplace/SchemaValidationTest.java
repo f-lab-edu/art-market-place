@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @EnableAutoConfiguration
 @EntityScan(basePackages = "com.woobeee.artmarketplace")
 @TestPropertySource(properties = {
-        "spring.datasource.url=jdbc:postgresql://localhost:9433/credential",
+        "spring.datasource.url=jdbc:postgresql://localhost:9432/market",
         "spring.datasource.username=root",
         "spring.datasource.password=123456789",
         "spring.datasource.driver-class-name=org.postgresql.Driver",
