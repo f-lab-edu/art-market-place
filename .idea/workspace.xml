@@ -5,8 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="74f3741e-e641-40ae-afa3-d3129e2d1f5c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.codex/skills/harness/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/.codex/skills/harness/SKILL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AGENTS.md" beforeDir="false" afterPath="$PROJECT_DIR$/AGENTS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ADR.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ADR.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ARCHITECTURE.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ARCHITECTURE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/PRD.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/PRD.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductImageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductImageRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductTagRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductTagRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/service/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/auth/controller/AuthControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/auth/controller/AuthControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/auth/controller/TokenGenerateControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/auth/controller/TokenGenerateControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/product/controller/ProductControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/product/controller/ProductControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/product/service/ProductServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/product/service/ProductServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,7 +28,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="3903" />
+    <option name="cachedIndexableFilesCount" value="3911" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -195,7 +209,8 @@
       <workItem from="1777291737991" duration="7482000" />
       <workItem from="1777611950472" duration="8996000" />
       <workItem from="1777625368191" duration="5357000" />
-      <workItem from="1777715688695" duration="1451000" />
+      <workItem from="1777715688695" duration="3155000" />
+      <workItem from="1777817194454" duration="1956000" />
     </task>
     <servers />
   </component>

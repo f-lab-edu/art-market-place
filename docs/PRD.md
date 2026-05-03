@@ -31,6 +31,8 @@
 
 - 상품 이미지 Presigned URL 발급: `POST /api/products/images`
 - 상품 등록: `POST /api/products`
+- 상품 전체 조회: `GET /api/products`
+- 상품 태그/작가 필터 조회: `GET /api/products/filter?tag={tagName}&artist={sellerNickname}`
 - 상품 이미지 수동 복구: `POST /api/products/{productId}/images`
 
 ### 블로그

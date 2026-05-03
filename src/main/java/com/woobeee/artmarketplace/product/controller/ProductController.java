@@ -7,17 +7,22 @@ import com.woobeee.artmarketplace.product.api.request.ProductImagePresignedUrlRe
 import com.woobeee.artmarketplace.product.api.response.PresignedUploadResponse;
 import com.woobeee.artmarketplace.product.api.response.ProductCreateResponse;
 import com.woobeee.artmarketplace.product.api.response.ProductImageRecoveryResponse;
+import com.woobeee.artmarketplace.product.api.response.ProductListResponse;
 import com.woobeee.artmarketplace.product.service.ProductImageStorageService;
 import com.woobeee.artmarketplace.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +33,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
     private final ProductImageStorageService productImageStorageService;
     private final ProductService productService;
+
+    @GetMapping
+    @Operation(
+            summary = "상품 전체 조회 / 필터 조회",
+            description = "이미지 이동이 완료되어 활성화된 상품 목록을 최신순으로 조회합니다.")
+    public ApiResponse<ProductListResponse> getProducts(
+            @RequestParam(value = "tag", required = false) String tag,
+            @RequestParam(value = "artist", required = false) String artist,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "12") Integer size
+    ) {
+        if (StringUtils.hasText(tag) || StringUtils.hasText(artist)) {
+            ProductListResponse response = productService.getProductsByFilters(tag, artist, PageRequest.of(page, size));
+            return ApiResponse.success(response, "Products retrieved");
+        }
+        ProductListResponse response = productService.getProducts(PageRequest.of(page, size));
+        return ApiResponse.success(response, "Products retrieved");
+    }
 
     @PostMapping("/images")
     @Operation(
