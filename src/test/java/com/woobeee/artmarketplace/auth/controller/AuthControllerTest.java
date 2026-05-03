@@ -8,7 +8,10 @@ import com.woobeee.artmarketplace.auth.api.response.GoogleAuthorizationResponse;
 import com.woobeee.artmarketplace.auth.api.response.TokenResponse;
 import com.woobeee.artmarketplace.auth.entity.MemberType;
 import com.woobeee.artmarketplace.auth.exception.AuthRestControllerAdvice;
+import com.woobeee.artmarketplace.auth.repository.BuyerRepository;
+import com.woobeee.artmarketplace.auth.repository.SellerRepository;
 import com.woobeee.artmarketplace.auth.service.AuthService;
+import com.woobeee.artmarketplace.auth.token.TokenStore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -35,6 +38,15 @@ class AuthControllerTest {
 
     @MockitoBean
     private AuthService authService;
+
+    @MockitoBean
+    private TokenStore tokenStore;
+
+    @MockitoBean
+    private BuyerRepository buyerRepository;
+
+    @MockitoBean
+    private SellerRepository sellerRepository;
 
     @Test
     void signupBuyerReturnsAuthorizationResponse() throws Exception {

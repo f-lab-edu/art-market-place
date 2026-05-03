@@ -1,10 +1,12 @@
 package com.woobeee.artmarketplace.product.service;
 
 import com.woobeee.artmarketplace.auth.repository.SellerRepository;
+import com.woobeee.artmarketplace.auth.entity.Seller;
 import com.woobeee.artmarketplace.product.api.request.ProductCreateRequest;
 import com.woobeee.artmarketplace.product.api.request.ProductImageRecoveryRequest;
 import com.woobeee.artmarketplace.product.api.response.ProductCreateResponse;
 import com.woobeee.artmarketplace.product.api.response.ProductImageRecoveryResponse;
+import com.woobeee.artmarketplace.product.api.response.ProductListResponse;
 import com.woobeee.artmarketplace.product.entity.Product;
 import com.woobeee.artmarketplace.product.entity.ProductImage;
 import com.woobeee.artmarketplace.product.entity.ProductImageType;
@@ -17,13 +19,19 @@ import com.woobeee.artmarketplace.product.repository.ProductRepository;
 import com.woobeee.artmarketplace.product.repository.ProductTagRepository;
 import com.woobeee.artmarketplace.product.repository.TagRepository;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -86,6 +94,29 @@ public class ProductService {
                 mainProductFileKey,
                 detailProductFileKeys
         );
+    }
+
+    @Transactional(readOnly = true)
+    public ProductListResponse getProducts(Pageable pageable) {
+        Page<Product> products = productRepository.findByActiveTrueOrderByCreatedAtDesc(pageable);
+        return toProductListResponse(products);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductListResponse getProductsByFilters(String tag, String artist, Pageable pageable) {
+        String normalizedTag = normalizeNullable(tag);
+        String normalizedArtist = normalizeNullable(artist);
+
+        if (normalizedTag == null && normalizedArtist == null) {
+            return getProducts(pageable);
+        }
+
+        Page<Product> products = productRepository.findActiveProductsByFilters(
+                normalizedTag,
+                normalizedArtist,
+                pageable
+        );
+        return toProductListResponse(products);
     }
 
     @Transactional
@@ -213,5 +244,105 @@ public class ProductService {
                 .map(String::trim)
                 .distinct()
                 .toList();
+    }
+
+    private ProductListResponse toProductListResponse(Page<Product> products) {
+        List<Product> productContents = products.getContent();
+        if (productContents.isEmpty()) {
+            return new ProductListResponse(products.hasNext(), List.of());
+        }
+
+        List<Long> productIds = productContents.stream()
+                .map(Product::getId)
+                .toList();
+        Map<Long, Seller> sellerById = sellerRepository.findAllById(productContents.stream()
+                        .map(Product::getSellerId)
+                        .collect(Collectors.toCollection(LinkedHashSet::new)))
+                .stream()
+                .collect(Collectors.toMap(Seller::getId, Function.identity()));
+        Map<Long, List<ProductImage>> imagesByProductId = productImageRepository
+                .findByProductIdInOrderByProductIdAscSortOrderAsc(productIds)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        ProductImage::getProductId,
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
+        Map<Long, List<String>> tagsByProductId = getTagsByProductId(productIds);
+
+        List<ProductListResponse.ProductSummary> contents = productContents.stream()
+                .map(product -> toProductSummary(
+                        product,
+                        sellerById.get(product.getSellerId()),
+                        imagesByProductId.getOrDefault(product.getId(), List.of()),
+                        tagsByProductId.getOrDefault(product.getId(), List.of())
+                ))
+                .toList();
+
+        return new ProductListResponse(products.hasNext(), contents);
+    }
+
+    private ProductListResponse.ProductSummary toProductSummary(
+            Product product,
+            Seller seller,
+            List<ProductImage> images,
+            List<String> tags
+    ) {
+        String mainImageKey = images.stream()
+                .filter(image -> image.getType() == ProductImageType.MAIN)
+                .min(Comparator.comparingInt(ProductImage::getSortOrder))
+                .map(ProductImage::getFileKey)
+                .orElse(null);
+        List<String> detailImageKeys = images.stream()
+                .filter(image -> image.getType() == ProductImageType.DETAIL)
+                .sorted(Comparator.comparingInt(ProductImage::getSortOrder))
+                .map(ProductImage::getFileKey)
+                .toList();
+
+        return new ProductListResponse.ProductSummary(
+                product.getId(),
+                product.getSellerId(),
+                seller == null ? null : seller.getNickname(),
+                product.getHeight(),
+                product.getWidth(),
+                product.getShape(),
+                product.getMaterial(),
+                tags,
+                product.getPrice(),
+                product.getStatus(),
+                mainImageKey,
+                detailImageKeys,
+                product.getCreatedAt()
+        );
+    }
+
+    private Map<Long, List<String>> getTagsByProductId(Collection<Long> productIds) {
+        List<ProductTag> productTags = productTagRepository.findByProductIdIn(productIds);
+        if (productTags.isEmpty()) {
+            return Map.of();
+        }
+
+        Map<Long, String> tagNameById = tagRepository.findAllById(productTags.stream()
+                        .map(ProductTag::getTagId)
+                        .collect(Collectors.toCollection(LinkedHashSet::new)))
+                .stream()
+                .collect(Collectors.toMap(Tag::getId, Tag::getName));
+
+        return productTags.stream()
+                .collect(Collectors.groupingBy(
+                        ProductTag::getProductId,
+                        LinkedHashMap::new,
+                        Collectors.mapping(
+                                productTag -> tagNameById.get(productTag.getTagId()),
+                                Collectors.filtering(StringUtils::hasText, Collectors.toList())
+                        )
+                ));
+    }
+
+    private String normalizeNullable(String value) {
+        if (!StringUtils.hasText(value)) {
+            return null;
+        }
+        return value.trim();
     }
 }

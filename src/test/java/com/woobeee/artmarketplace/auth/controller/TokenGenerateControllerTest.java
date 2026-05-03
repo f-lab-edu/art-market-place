@@ -5,7 +5,10 @@ import com.woobeee.artmarketplace.auth.api.request.TokenIssueRequest;
 import com.woobeee.artmarketplace.auth.api.request.TokenRefreshRequest;
 import com.woobeee.artmarketplace.auth.api.response.TokenResponse;
 import com.woobeee.artmarketplace.auth.exception.AuthRestControllerAdvice;
+import com.woobeee.artmarketplace.auth.repository.BuyerRepository;
+import com.woobeee.artmarketplace.auth.repository.SellerRepository;
 import com.woobeee.artmarketplace.auth.service.TokenService;
+import com.woobeee.artmarketplace.auth.token.TokenStore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -32,6 +35,15 @@ class TokenGenerateControllerTest {
 
     @MockitoBean
     private TokenService tokenService;
+
+    @MockitoBean
+    private TokenStore tokenStore;
+
+    @MockitoBean
+    private BuyerRepository buyerRepository;
+
+    @MockitoBean
+    private SellerRepository sellerRepository;
 
     @Test
     void issueReturnsTokenResponse() throws Exception {

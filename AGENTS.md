@@ -39,6 +39,7 @@
 - Harness 실행기는 `scripts/execute.py`를 사용한다.
 - Harness 검증 명령은 `.codex/settings.json`의 `validation.commands`에 둔다.
 - Harness step이 `completed`로 표시되어도 검증 명령이 실패하면 완료 처리하지 않는다.
+- 구현 또는 검증 중 테스트/빌드가 실패하면 실패 원인을 요약하고, 수정 지속/부분 롤백/전체 롤백 중 어떤 방향으로 진행할지 사용자에게 확인한다. 사용자 승인 없이 실패한 변경을 임의로 되돌리지 않는다.
 - 실행기 자체 검증은 다음 명령을 사용한다.
 
 ```bash

@@ -6,6 +6,7 @@ import com.woobeee.artmarketplace.product.api.request.ProductCreateRequest;
 import com.woobeee.artmarketplace.product.api.request.ProductImageRecoveryRequest;
 import com.woobeee.artmarketplace.product.api.response.ProductCreateResponse;
 import com.woobeee.artmarketplace.product.api.response.ProductImageRecoveryResponse;
+import com.woobeee.artmarketplace.product.api.response.ProductListResponse;
 import com.woobeee.artmarketplace.product.entity.Product;
 import com.woobeee.artmarketplace.product.entity.ProductImage;
 import com.woobeee.artmarketplace.product.entity.ProductImageType;
@@ -29,6 +30,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,6 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -222,6 +226,51 @@ class ProductServiceTest {
     }
 
     @Test
+    void getProductsReturnsActiveProductSummaries() {
+        Product product = productWithId(99L);
+        product.activate();
+        Seller seller = sellerWithId(7L, "artist");
+        PageRequest pageable = PageRequest.of(0, 12);
+        when(productRepository.findByActiveTrueOrderByCreatedAtDesc(pageable))
+                .thenReturn(new PageImpl<>(List.of(product), pageable, 1));
+        when(sellerRepository.findAllById(any())).thenReturn(List.of(seller));
+        when(productImageRepository.findByProductIdInOrderByProductIdAscSortOrderAsc(List.of(99L)))
+                .thenReturn(List.of(
+                        image(99L, "products/99/main.jpg", ProductImageType.MAIN, 0),
+                        image(99L, "products/99/detail.jpg", ProductImageType.DETAIL, 1)
+                ));
+        when(productTagRepository.findByProductIdIn(List.of(99L)))
+                .thenReturn(List.of(ProductTag.create(99L, 11L)));
+        when(tagRepository.findAllById(any()))
+                .thenReturn(List.of(tagWithId("oil", 11L)));
+
+        ProductListResponse response = productService.getProducts(pageable);
+
+        assertThat(response.hasNext()).isFalse();
+        assertThat(response.contents()).hasSize(1);
+        ProductListResponse.ProductSummary summary = response.contents().get(0);
+        assertThat(summary.productId()).isEqualTo(99L);
+        assertThat(summary.sellerId()).isEqualTo(7L);
+        assertThat(summary.artist()).isEqualTo("artist");
+        assertThat(summary.tags()).containsExactly("oil");
+        assertThat(summary.status()).isEqualTo(ProductStatus.ACTIVE);
+        assertThat(summary.mainImageKey()).isEqualTo("products/99/main.jpg");
+        assertThat(summary.detailImageKeys()).containsExactly("products/99/detail.jpg");
+    }
+
+    @Test
+    void getProductsByFiltersTrimsTagAndArtist() {
+        PageRequest pageable = PageRequest.of(0, 12);
+        when(productRepository.findActiveProductsByFilters("oil", "artist", pageable))
+                .thenReturn(new PageImpl<>(List.of(), pageable, 0));
+
+        ProductListResponse response = productService.getProductsByFilters(" oil ", " artist ", pageable);
+
+        assertThat(response.contents()).isEmpty();
+        verify(productRepository).findActiveProductsByFilters("oil", "artist", pageable);
+    }
+
+    @Test
     void markProductImageFailedChangesProductStatus() {
         Product product = productWithId(99L);
         product.markImagePending();
@@ -269,6 +318,16 @@ class ProductServiceTest {
         );
         ReflectionTestUtils.setField(product, "id", id);
         return product;
+    }
+
+    private Seller sellerWithId(Long id, String nickname) {
+        Seller seller = Seller.create("google-sub", "seller@example.com", nickname, true, true, null);
+        ReflectionTestUtils.setField(seller, "id", id);
+        return seller;
+    }
+
+    private ProductImage image(Long productId, String fileKey, ProductImageType type, int sortOrder) {
+        return ProductImage.create(productId, fileKey, type, sortOrder);
     }
 
     private Tag tagWithId(String name, Long id) {

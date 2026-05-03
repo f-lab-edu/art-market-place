@@ -20,6 +20,7 @@
 - 상태: 적용
 - 이유: 관계형 도메인 모델과 트랜잭션 처리가 핵심이며, 엔티티 기반 개발 생산성이 높다.
 - 운영 규칙: Hibernate DDL 자동 생성은 사용하지 않고 validate를 기본으로 한다.
+- 조회 규칙: 단순 CRUD와 고정 조건 조회는 Spring Data JPA 메서드 쿼리를 우선 사용한다. 동적 조건, 복수 테이블 조건, 복잡한 정렬/페이징이 필요한 SQL 접근은 JPQL 문자열 대신 QueryDSL 커스텀 레포지토리로 구현한다.
 - 검증: `SchemaValidationTest`와 Harness validation 명령으로 엔티티/스키마 불일치를 실패 처리한다.
 
 ## ADR-004. 토큰과 OAuth state는 Redis에 저장한다
