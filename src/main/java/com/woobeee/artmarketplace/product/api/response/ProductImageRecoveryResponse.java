@@ -7,6 +7,7 @@ public record ProductImageRecoveryResponse(
         Long productId,
         ProductStatus status,
         String mainImageKey,
+        List<String> thumbnailImageKeys,
         List<String> detailImageKeys
 ) {
 }

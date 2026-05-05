@@ -3,7 +3,9 @@ package com.woobeee.artmarketplace.product.controller;
 import com.woobeee.artmarketplace.product.api.ApiResponse;
 import com.woobeee.artmarketplace.product.api.request.ProductCreateRequest;
 import com.woobeee.artmarketplace.product.api.request.ProductImageRecoveryRequest;
+import com.woobeee.artmarketplace.product.api.request.ProductImagePresignedUrlBatchRequest;
 import com.woobeee.artmarketplace.product.api.request.ProductImagePresignedUrlRequest;
+import com.woobeee.artmarketplace.product.api.response.PresignedUploadBatchResponse;
 import com.woobeee.artmarketplace.product.api.response.PresignedUploadResponse;
 import com.woobeee.artmarketplace.product.api.response.ProductCreateResponse;
 import com.woobeee.artmarketplace.product.api.response.ProductImageRecoveryResponse;
@@ -61,6 +63,17 @@ public class ProductController {
     ) {
         PresignedUploadResponse response = productImageStorageService.createPresignedUploadUrl(request);
         return ApiResponse.success(response, "Product image presigned URL created");
+    }
+
+    @PostMapping("/images/batch")
+    @Operation(
+            summary = "상품 이미지 Presigned URL 묶음 발급",
+            description = "대표/썸네일/상세 이미지용 S3/MinIO PUT URL을 한 번에 발급합니다.")
+    public ApiResponse<PresignedUploadBatchResponse> createImagePresignedUrls(
+            @Valid @RequestBody ProductImagePresignedUrlBatchRequest request
+    ) {
+        PresignedUploadBatchResponse response = productImageStorageService.createPresignedUploadUrls(request);
+        return ApiResponse.success(response, "Product image presigned URLs created");
     }
 
     @PostMapping

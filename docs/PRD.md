@@ -30,7 +30,11 @@
 ### 상품
 
 - 상품 이미지 Presigned URL 발급: `POST /api/products/images`
+  - 요청은 이미지 `contentType`만 받으며, 서버가 UUID 기반 temp image key를 생성한다.
+- 상품 이미지 Presigned URL 묶음 발급: `POST /api/products/images/batch`
+  - 대표 이미지 1개, 썸네일 이미지 목록, 상세 이미지 목록의 PUT URL을 한 번에 발급한다.
 - 상품 등록: `POST /api/products`
+  - 대표 이미지, 썸네일 이미지 목록, 상세 이미지 목록을 별도 temp image key 필드로 전달한다.
 - 상품 전체 조회: `GET /api/products`
 - 상품 태그/작가 필터 조회: `GET /api/products/filter?tag={tagName}&artist={sellerNickname}`
 - 상품 이미지 수동 복구: `POST /api/products/{productId}/images`

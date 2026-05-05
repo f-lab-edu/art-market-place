@@ -21,6 +21,7 @@ public record ProductListResponse(
             BigDecimal price,
             ProductStatus status,
             String mainImageKey,
+            List<String> thumbnailImageKeys,
             List<String> detailImageKeys,
             LocalDateTime createdAt
     ) {

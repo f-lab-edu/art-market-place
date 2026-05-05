@@ -5,20 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="74f3741e-e641-40ae-afa3-d3129e2d1f5c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AGENTS.md" beforeDir="false" afterPath="$PROJECT_DIR$/AGENTS.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ADR.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ADR.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/ARCHITECTURE.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ARCHITECTURE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/DESIGN.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/DESIGN.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/PRD.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/PRD.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/controller/ProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductImageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductImageRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductTagRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/repository/ProductTagRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/request/ProductCreateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/request/ProductCreateRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/request/ProductImagePresignedUrlRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/request/ProductImagePresignedUrlRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/request/ProductImageRecoveryRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/request/ProductImageRecoveryRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/response/ProductCreateResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/response/ProductCreateResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/response/ProductImageRecoveryResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/response/ProductImageRecoveryResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/response/ProductListResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/api/response/ProductListResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/entity/ProductImageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/entity/ProductImageType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/service/ProductImageStorageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/service/ProductImageStorageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/woobeee/artmarketplace/product/service/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/auth/controller/AuthControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/auth/controller/AuthControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/auth/controller/TokenGenerateControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/auth/controller/TokenGenerateControllerTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/product/controller/ProductControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/product/controller/ProductControllerTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/product/service/ProductServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/woobeee/artmarketplace/product/service/ProductServiceTest.java" afterDir="false" />
     </list>
@@ -28,7 +27,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="3911" />
+    <option name="cachedIndexableFilesCount" value="3926" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -113,7 +112,7 @@
     &quot;SHELLCHECK.PATH&quot;: &quot;/Users/administrator/Library/Application Support/JetBrains/IntelliJIdea2024.1/plugins/Shell Script/shellcheck&quot;,
     &quot;Spring Boot.ArtMarketPlaceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.AuthApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/14&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/administrator/Documents/projects/art-market-place/src/main/java/com/woobeee/artmarketplace/blog&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -178,6 +177,9 @@
   </component>
   <component name="RunManager">
     <configuration name="ArtMarketPlaceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <envs>
+        <env name="GOOGLE_CLIENT_SECRET" value="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" />
+      </envs>
       <module name="art-market-place" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.woobeee.artmarketplace.ArtMarketPlaceApplication" />
       <method v="2">
@@ -210,7 +212,8 @@
       <workItem from="1777611950472" duration="8996000" />
       <workItem from="1777625368191" duration="5357000" />
       <workItem from="1777715688695" duration="3155000" />
-      <workItem from="1777817194454" duration="1956000" />
+      <workItem from="1777817194454" duration="3405000" />
+      <workItem from="1777950702377" duration="10967000" />
     </task>
     <servers />
   </component>

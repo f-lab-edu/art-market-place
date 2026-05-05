@@ -1,12 +1,15 @@
 package com.woobeee.artmarketplace.product.service;
 
 import com.woobeee.artmarketplace.product.api.request.ProductImagePresignedUrlRequest;
+import com.woobeee.artmarketplace.product.api.request.ProductImagePresignedUrlBatchRequest;
+import com.woobeee.artmarketplace.product.api.response.PresignedUploadBatchResponse;
 import com.woobeee.artmarketplace.product.api.response.PresignedUploadResponse;
 import com.woobeee.artmarketplace.product.config.StorageProperties;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
@@ -28,18 +33,24 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 public class ProductImageStorageService {
     private static final String TEMP_PRODUCT_PREFIX = "temp/products/";
     private static final String PRODUCT_PREFIX = "products/";
+    private static final Map<String, String> SUPPORTED_IMAGE_EXTENSIONS = Map.of(
+            "image/jpeg", ".jpg",
+            "image/png", ".png",
+            "image/webp", ".webp"
+    );
 
     private final S3Client s3Client;
     private final S3Presigner s3Presigner;
     private final StorageProperties storageProperties;
 
     public PresignedUploadResponse createPresignedUploadUrl(ProductImagePresignedUrlRequest request) {
-        String fileKey = TEMP_PRODUCT_PREFIX + UUID.randomUUID() + "/" + sanitizeFileName(request.fileName());
+        String contentType = normalizeContentType(request.contentType());
+        String fileKey = TEMP_PRODUCT_PREFIX + UUID.randomUUID() + extensionFor(contentType);
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(storageProperties.getBucket())
                 .key(fileKey)
-                .contentType(request.contentType().trim())
+                .contentType(contentType)
                 .build();
 
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
@@ -54,6 +65,14 @@ public class ProductImageStorageService {
         );
     }
 
+    public PresignedUploadBatchResponse createPresignedUploadUrls(ProductImagePresignedUrlBatchRequest request) {
+        return new PresignedUploadBatchResponse(
+                createPresignedUploadUrl(request.mainImage()),
+                createPresignedUploadUrls(request.thumbnailImages()),
+                createPresignedUploadUrls(request.detailImages())
+        );
+    }
+
     public String toProductFileKey(Long productId, String tempFileKey) {
         validateTempProductFileKey(tempFileKey);
         return PRODUCT_PREFIX + productId + "/" + tempFileKey.substring(TEMP_PRODUCT_PREFIX.length());
@@ -62,6 +81,25 @@ public class ProductImageStorageService {
     public void validateTempProductFileKey(String fileKey) {
         if (!StringUtils.hasText(fileKey) || !fileKey.startsWith(TEMP_PRODUCT_PREFIX)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product image key must be a temp product key");
+        }
+    }
+
+    public void validateTempProductFileKeysExist(Collection<String> fileKeys) {
+        for (String fileKey : fileKeys) {
+            try {
+                HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
+                        .bucket(storageProperties.getBucket())
+                        .key(fileKey)
+                        .build();
+
+                s3Client.headObject(headObjectRequest);
+            } catch (NoSuchKeyException exception) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Uploaded product image does not exist: " + fileKey,
+                        exception
+                );
+            }
         }
     }
 
@@ -110,18 +148,24 @@ public class ProductImageStorageService {
         s3Client.deleteObject(deleteObjectRequest);
     }
 
-    private String sanitizeFileName(String fileName) {
-        String sanitized = fileName.trim()
-                .replace("\\", "/");
-        int lastSlashIndex = sanitized.lastIndexOf('/');
-        if (lastSlashIndex >= 0) {
-            sanitized = sanitized.substring(lastSlashIndex + 1);
-        }
+    private String normalizeContentType(String contentType) {
+        return contentType.trim().toLowerCase(Locale.ROOT);
+    }
 
-        sanitized = sanitized.replaceAll("[^A-Za-z0-9._-]", "_");
-        if (!StringUtils.hasText(sanitized)) {
-            return "image";
+    private List<PresignedUploadResponse> createPresignedUploadUrls(List<ProductImagePresignedUrlRequest> requests) {
+        if (requests == null || requests.isEmpty()) {
+            return List.of();
         }
-        return sanitized;
+        return requests.stream()
+                .map(this::createPresignedUploadUrl)
+                .toList();
+    }
+
+    private String extensionFor(String contentType) {
+        String extension = SUPPORTED_IMAGE_EXTENSIONS.get(contentType);
+        if (extension == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported product image content type");
+        }
+        return extension;
     }
 }

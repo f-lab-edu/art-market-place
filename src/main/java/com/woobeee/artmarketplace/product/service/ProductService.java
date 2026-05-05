@@ -53,9 +53,10 @@ public class ProductService {
     @Transactional
     public ProductCreateResponse createProduct(ProductCreateRequest request) {
         String mainImageKey = request.mainImageKey().trim();
+        List<String> thumbnailImageKeys = normalizeList(request.thumbnailImageKeys());
         List<String> detailImageKeys = normalizeList(request.detailImageKeys());
         List<String> tags = normalizeList(request.tags());
-        List<String> tempFileKeys = collectAndValidateTempFileKeys(mainImageKey, detailImageKeys);
+        List<String> tempFileKeys = collectAndValidateTempFileKeys(mainImageKey, thumbnailImageKeys, detailImageKeys);
 
         sellerRepository.findById(request.sellerId())
                 .filter(seller -> seller.isActive())
@@ -73,11 +74,14 @@ public class ProductService {
         Map<String, String> fileKeyMap = createProductFileKeyMap(product.getId(), tempFileKeys);
 
         String mainProductFileKey = fileKeyMap.get(mainImageKey);
+        List<String> thumbnailProductFileKeys = thumbnailImageKeys.stream()
+                .map(fileKeyMap::get)
+                .toList();
         List<String> detailProductFileKeys = detailImageKeys.stream()
                 .map(fileKeyMap::get)
                 .toList();
 
-        saveImages(product.getId(), mainProductFileKey, detailProductFileKeys);
+        saveImages(product.getId(), mainProductFileKey, thumbnailProductFileKeys, detailProductFileKeys);
         saveTags(product.getId(), tags);
         applicationEventPublisher.publishEvent(new ProductImagesRegisteredEvent(product.getId(), tempFileKeys, fileKeyMap));
 
@@ -92,6 +96,7 @@ public class ProductService {
                 product.getPrice(),
                 product.getStatus(),
                 mainProductFileKey,
+                thumbnailProductFileKeys,
                 detailProductFileKeys
         );
     }
@@ -132,17 +137,21 @@ public class ProductService {
         }
 
         String mainImageKey = request.mainImageKey().trim();
+        List<String> thumbnailImageKeys = normalizeList(request.thumbnailImageKeys());
         List<String> detailImageKeys = normalizeList(request.detailImageKeys());
-        List<String> tempFileKeys = collectAndValidateTempFileKeys(mainImageKey, detailImageKeys);
+        List<String> tempFileKeys = collectAndValidateTempFileKeys(mainImageKey, thumbnailImageKeys, detailImageKeys);
         Map<String, String> fileKeyMap = createProductFileKeyMap(product.getId(), tempFileKeys);
 
         String mainProductFileKey = fileKeyMap.get(mainImageKey);
+        List<String> thumbnailProductFileKeys = thumbnailImageKeys.stream()
+                .map(fileKeyMap::get)
+                .toList();
         List<String> detailProductFileKeys = detailImageKeys.stream()
                 .map(fileKeyMap::get)
                 .toList();
 
         productImageRepository.deleteByProductId(product.getId());
-        saveImages(product.getId(), mainProductFileKey, detailProductFileKeys);
+        saveImages(product.getId(), mainProductFileKey, thumbnailProductFileKeys, detailProductFileKeys);
         product.markImagePending();
         applicationEventPublisher.publishEvent(new ProductImagesRegisteredEvent(product.getId(), tempFileKeys, fileKeyMap));
 
@@ -150,6 +159,7 @@ public class ProductService {
                 product.getId(),
                 product.getStatus(),
                 mainProductFileKey,
+                thumbnailProductFileKeys,
                 detailProductFileKeys
         );
     }
@@ -162,15 +172,27 @@ public class ProductService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void markProductImageFailed(Long productId) {
+        productImageRepository.deleteByProductId(productId);
         productRepository.findById(productId)
                 .ifPresent(Product::markImageFailed);
     }
 
-    private List<String> collectAndValidateTempFileKeys(String mainImageKey, List<String> detailImageKeys) {
+    private List<String> collectAndValidateTempFileKeys(
+            String mainImageKey,
+            List<String> thumbnailImageKeys,
+            List<String> detailImageKeys
+    ) {
         productImageStorageService.validateTempProductFileKey(mainImageKey);
 
         LinkedHashSet<String> fileKeys = new LinkedHashSet<>();
         fileKeys.add(mainImageKey);
+
+        for (String thumbnailImageKey : thumbnailImageKeys) {
+            productImageStorageService.validateTempProductFileKey(thumbnailImageKey);
+            if (!fileKeys.add(thumbnailImageKey)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product image keys must not be duplicated");
+            }
+        }
 
         for (String detailImageKey : detailImageKeys) {
             productImageStorageService.validateTempProductFileKey(detailImageKey);
@@ -179,7 +201,9 @@ public class ProductService {
             }
         }
 
-        return new ArrayList<>(fileKeys);
+        List<String> validatedFileKeys = new ArrayList<>(fileKeys);
+        productImageStorageService.validateTempProductFileKeysExist(validatedFileKeys);
+        return validatedFileKeys;
     }
 
     private Map<String, String> createProductFileKeyMap(Long productId, List<String> tempFileKeys) {
@@ -190,16 +214,30 @@ public class ProductService {
         return fileKeyMap;
     }
 
-    private void saveImages(Long productId, String mainProductFileKey, List<String> detailProductFileKeys) {
+    private void saveImages(
+            Long productId,
+            String mainProductFileKey,
+            List<String> thumbnailProductFileKeys,
+            List<String> detailProductFileKeys
+    ) {
         List<ProductImage> productImages = new ArrayList<>();
         productImages.add(ProductImage.create(productId, mainProductFileKey, ProductImageType.MAIN, 0));
+
+        for (int index = 0; index < thumbnailProductFileKeys.size(); index++) {
+            productImages.add(ProductImage.create(
+                    productId,
+                    thumbnailProductFileKeys.get(index),
+                    ProductImageType.THUMBNAIL,
+                    index + 1
+            ));
+        }
 
         for (int index = 0; index < detailProductFileKeys.size(); index++) {
             productImages.add(ProductImage.create(
                     productId,
                     detailProductFileKeys.get(index),
                     ProductImageType.DETAIL,
-                    index + 1
+                    thumbnailProductFileKeys.size() + index + 1
             ));
         }
 
@@ -298,6 +336,11 @@ public class ProductService {
                 .sorted(Comparator.comparingInt(ProductImage::getSortOrder))
                 .map(ProductImage::getFileKey)
                 .toList();
+        List<String> thumbnailImageKeys = images.stream()
+                .filter(image -> image.getType() == ProductImageType.THUMBNAIL)
+                .sorted(Comparator.comparingInt(ProductImage::getSortOrder))
+                .map(ProductImage::getFileKey)
+                .toList();
 
         return new ProductListResponse.ProductSummary(
                 product.getId(),
@@ -311,6 +354,7 @@ public class ProductService {
                 product.getPrice(),
                 product.getStatus(),
                 mainImageKey,
+                thumbnailImageKeys,
                 detailImageKeys,
                 product.getCreatedAt()
         );

@@ -15,6 +15,7 @@ public record ProductCreateResponse(
         BigDecimal price,
         ProductStatus status,
         String mainImageKey,
+        List<String> thumbnailImageKeys,
         List<String> detailImageKeys
 ) {
 }

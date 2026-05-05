@@ -5,8 +5,10 @@ import com.woobeee.artmarketplace.auth.repository.BuyerRepository;
 import com.woobeee.artmarketplace.auth.repository.SellerRepository;
 import com.woobeee.artmarketplace.auth.token.TokenStore;
 import com.woobeee.artmarketplace.product.api.request.ProductCreateRequest;
+import com.woobeee.artmarketplace.product.api.request.ProductImagePresignedUrlBatchRequest;
 import com.woobeee.artmarketplace.product.api.request.ProductImagePresignedUrlRequest;
 import com.woobeee.artmarketplace.product.api.request.ProductImageRecoveryRequest;
+import com.woobeee.artmarketplace.product.api.response.PresignedUploadBatchResponse;
 import com.woobeee.artmarketplace.product.api.response.PresignedUploadResponse;
 import com.woobeee.artmarketplace.product.api.response.ProductCreateResponse;
 import com.woobeee.artmarketplace.product.api.response.ProductImageRecoveryResponse;
@@ -75,6 +77,7 @@ class ProductControllerTest {
                         new BigDecimal("150000.00"),
                         ProductStatus.ACTIVE,
                         "products/99/uuid/main.jpg",
+                        List.of("products/99/uuid/thumb.jpg"),
                         List.of("products/99/uuid/detail.jpg"),
                         LocalDateTime.of(2026, 5, 3, 12, 0)
                 ))
@@ -118,10 +121,10 @@ class ProductControllerTest {
     @Test
     void createImagePresignedUrlReturnsUploadResponse() throws Exception {
         ProductImagePresignedUrlRequest request =
-                new ProductImagePresignedUrlRequest("main.jpg", "image/jpeg");
+                new ProductImagePresignedUrlRequest("image/jpeg");
         PresignedUploadResponse response = new PresignedUploadResponse(
-                "http://localhost:9000/woobeee/temp/products/uuid/main.jpg",
-                "temp/products/uuid/main.jpg",
+                "http://localhost:9000/woobeee/temp/products/uuid.jpg",
+                "temp/products/uuid.jpg",
                 600
         );
         when(productImageStorageService.createPresignedUploadUrl(eq(request))).thenReturn(response);
@@ -133,11 +136,50 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.header.isSuccessful").value(true))
                 .andExpect(jsonPath("$.header.message").value("Product image presigned URL created"))
                 .andExpect(jsonPath("$.data.uploadUrl")
-                        .value("http://localhost:9000/woobeee/temp/products/uuid/main.jpg"))
-                .andExpect(jsonPath("$.data.fileKey").value("temp/products/uuid/main.jpg"))
+                        .value("http://localhost:9000/woobeee/temp/products/uuid.jpg"))
+                .andExpect(jsonPath("$.data.fileKey").value("temp/products/uuid.jpg"))
                 .andExpect(jsonPath("$.data.expiresInSeconds").value(600));
 
         verify(productImageStorageService).createPresignedUploadUrl(request);
+    }
+
+    @Test
+    void createImagePresignedUrlsReturnsGroupedUploadResponses() throws Exception {
+        ProductImagePresignedUrlBatchRequest request = new ProductImagePresignedUrlBatchRequest(
+                new ProductImagePresignedUrlRequest("image/jpeg"),
+                List.of(new ProductImagePresignedUrlRequest("image/webp")),
+                List.of(new ProductImagePresignedUrlRequest("image/png"))
+        );
+        PresignedUploadBatchResponse response = new PresignedUploadBatchResponse(
+                new PresignedUploadResponse(
+                        "http://localhost:9000/woobeee/temp/products/main.jpg",
+                        "temp/products/main.jpg",
+                        600
+                ),
+                List.of(new PresignedUploadResponse(
+                        "http://localhost:9000/woobeee/temp/products/thumb.webp",
+                        "temp/products/thumb.webp",
+                        600
+                )),
+                List.of(new PresignedUploadResponse(
+                        "http://localhost:9000/woobeee/temp/products/detail.png",
+                        "temp/products/detail.png",
+                        600
+                ))
+        );
+        when(productImageStorageService.createPresignedUploadUrls(eq(request))).thenReturn(response);
+
+        mockMvc.perform(post("/api/products/images/batch")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.isSuccessful").value(true))
+                .andExpect(jsonPath("$.header.message").value("Product image presigned URLs created"))
+                .andExpect(jsonPath("$.data.mainImage.fileKey").value("temp/products/main.jpg"))
+                .andExpect(jsonPath("$.data.thumbnailImages[0].fileKey").value("temp/products/thumb.webp"))
+                .andExpect(jsonPath("$.data.detailImages[0].fileKey").value("temp/products/detail.png"));
+
+        verify(productImageStorageService).createPresignedUploadUrls(request);
     }
 
     @Test
@@ -154,6 +196,7 @@ class ProductControllerTest {
                 new BigDecimal("150000.00"),
                 ProductStatus.IMAGE_PENDING,
                 "products/99/uuid/main.jpg",
+                List.of("products/99/uuid/thumb.jpg"),
                 List.of("products/99/uuid/detail.jpg")
         );
         when(productService.createProduct(eq(request))).thenReturn(response);
@@ -168,6 +211,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.data.sellerId").value(7))
                 .andExpect(jsonPath("$.data.status").value("IMAGE_PENDING"))
                 .andExpect(jsonPath("$.data.mainImageKey").value("products/99/uuid/main.jpg"))
+                .andExpect(jsonPath("$.data.thumbnailImageKeys[0]").value("products/99/uuid/thumb.jpg"))
                 .andExpect(jsonPath("$.data.detailImageKeys[0]").value("products/99/uuid/detail.jpg"));
 
         verify(productService).createProduct(request);
@@ -177,12 +221,14 @@ class ProductControllerTest {
     void recoverProductImagesReturnsRecoveryResponse() throws Exception {
         ProductImageRecoveryRequest request = new ProductImageRecoveryRequest(
                 "temp/products/recovery/main.jpg",
+                List.of("temp/products/recovery/thumb.jpg"),
                 List.of("temp/products/recovery/detail.jpg")
         );
         ProductImageRecoveryResponse response = new ProductImageRecoveryResponse(
                 99L,
                 ProductStatus.IMAGE_PENDING,
                 "products/99/recovery/main.jpg",
+                List.of("products/99/recovery/thumb.jpg"),
                 List.of("products/99/recovery/detail.jpg")
         );
         when(productService.recoverProductImages(eq(99L), eq(request))).thenReturn(response);
@@ -196,6 +242,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.data.productId").value(99))
                 .andExpect(jsonPath("$.data.status").value("IMAGE_PENDING"))
                 .andExpect(jsonPath("$.data.mainImageKey").value("products/99/recovery/main.jpg"))
+                .andExpect(jsonPath("$.data.thumbnailImageKeys[0]").value("products/99/recovery/thumb.jpg"))
                 .andExpect(jsonPath("$.data.detailImageKeys[0]").value("products/99/recovery/detail.jpg"));
 
         verify(productService).recoverProductImages(99L, request);
@@ -212,6 +259,7 @@ class ProductControllerTest {
                 List.of("oil"),
                 new BigDecimal("150000.00"),
                 "temp/products/uuid/main.jpg",
+                List.of(),
                 List.of("temp/products/uuid/detail.jpg")
         );
 
@@ -235,6 +283,7 @@ class ProductControllerTest {
                 List.of("oil", "modern"),
                 new BigDecimal("150000.00"),
                 "temp/products/uuid/main.jpg",
+                List.of("temp/products/uuid/thumb.jpg"),
                 List.of("temp/products/uuid/detail.jpg")
         );
     }
