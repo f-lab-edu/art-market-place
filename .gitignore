@@ -27,6 +27,10 @@ logs/
 # Docker local data
 .docker-compose/.docker-volumes/
 
+#python 제외 파일
+scripts/__pycache__/
+*.pyc
+
 
 # Node 의존성
 front/node_modules/
